@@ -42,3 +42,8 @@ target_link_libraries( # Specifies the target library.
                        # Links the target library to the log library
                        # included in the NDK.
                        ${log-lib} )
+
+add_executable(ip-up-vpn
+        ip-up-vpn.c)
+target_link_libraries(ip-up-vpn
+        ${log-lib})
