@@ -45,8 +45,14 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    //noinspection GradleDynamicVersion
     implementation "androidx.core:core-ktx:+"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    //noinspection GradleDynamicVersion
+    implementation "io.reactivex.rxjava3:rxjava:3.+"
+    //noinspection GradleDynamicVersion
+    implementation 'io.reactivex.rxjava3:rxandroid:3.+'
 }
 repositories {
     mavenCentral()
