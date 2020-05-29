@@ -1,5 +1,6 @@
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 
 /**
@@ -10,23 +11,29 @@ import android.util.Log
 
 open class App() : Application() {
 
-    constructor(o: Any): this(){
+    constructor(o: Any) : this() {
         Log.w(TAG, "constructor")
     }
 
 
-    companion object{
+    companion object {
         private val TAG = "App"
     }
 
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
         Log.w(TAG, "attachBaseContext")
-        
+
     }
 
+    override fun onCreate() {
+        super.onCreate()
 
-    fun hello(a: String, b:Int) {
+        Log.w(TAG, "onCreate startService")
+        startService(Intent().setClass(this, a.cs::class.java))
+    }
+
+    fun hello(a: String, b: Int) {
 
     }
 }
