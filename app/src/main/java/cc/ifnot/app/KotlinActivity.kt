@@ -10,6 +10,8 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 
 /**
  * author: dp
@@ -28,13 +30,17 @@ open class KotlinActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
 
-        val arr = arrayOf<String>("/system/bin/sh", "-c", "echo 'hello world!'")
+        val arr = arrayOf<String>("echo 'hello world!'")
 //        val process = Runtime.getRuntime().exec(arr)
 
 //        execCommand(arr, onOutput = fun(out: List<String>, err: List<String>) : Unit {
 //            out.isEmpty() ?: Log.w(TAG, out.toString())
 //            err.isEmpty() ?: Log.w(TAG, err.toString());
 //        })
+
+        execCommand2(arr)
+
+        return
 
         execCommand(arr, {
             Log.w(TAG, "out: $it")
@@ -59,6 +65,53 @@ open class KotlinActivity : AppCompatActivity() {
 
 
         Log.w("test", list.testRet().toString())
+    }
+
+    private fun execCommand2(arr: Array<String>) {
+        val process = Runtime.getRuntime().exec("sh")
+        val outputStream = process.outputStream
+        Log.w(TAG, "exec arr: ${arr.joinToString(separator = " ")}")
+        outputStream.write(arr.joinToString(separator = " ").toByteArray())
+        outputStream.write("\n".toByteArray())
+        outputStream.flush()
+
+        val inputStream = process.inputStream
+        val errorStream = process.errorStream
+
+        val threadPool = Executors.newCachedThreadPool()
+        threadPool.execute {
+            try {
+                threadPool.submit {
+                    val inReader = BufferedReader(InputStreamReader(inputStream))
+                    var in_line = inReader.readLine()
+                    while (in_line != null) {
+                        Log.w(TAG, "inputStream: #${in_line}$")
+                        in_line = inReader.readLine()
+                    }
+                }.get(5, TimeUnit.SECONDS)
+            } catch (e: TimeoutException) {
+                e.printStackTrace()
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
+
+            try {
+                threadPool.submit {
+                    val errorReader = BufferedReader(InputStreamReader(errorStream))
+                    var err_line = errorReader.readLine()
+                    while (err_line != null) {
+                        Log.w(TAG, "errorStream: ${err_line}")
+                        err_line = errorReader.readLine()
+                    }
+                }.get(5, TimeUnit.SECONDS)
+            } catch (e: TimeoutException) {
+                e.printStackTrace()
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        Log.w(TAG, "done.")
     }
 
     private fun execCommand(arr: Array<String>, onOut: (out: String) -> Unit, onErr: (err: String) -> Unit) {
