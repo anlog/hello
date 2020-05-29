@@ -5,9 +5,11 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.core.SingleEmitter
 import io.reactivex.rxjava3.core.SingleOnSubscribe
 import io.reactivex.rxjava3.schedulers.Schedulers
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.util.concurrent.Executors
 
 /**
  * author: dp
@@ -26,6 +28,22 @@ open class KotlinActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
 
+        val arr = arrayOf<String>("/system/bin/sh", "-c", "echo 'hello world!'")
+//        val process = Runtime.getRuntime().exec(arr)
+
+//        execCommand(arr, onOutput = fun(out: List<String>, err: List<String>) : Unit {
+//            out.isEmpty() ?: Log.w(TAG, out.toString())
+//            err.isEmpty() ?: Log.w(TAG, err.toString());
+//        })
+
+        execCommand(arr, {
+            Log.w(TAG, "out: $it")
+        }, {
+            Log.w(TAG, "err: $it")
+        })
+
+        return
+
         Log.d(TAG, "thread: " + Thread.currentThread(), Exception())
         Single.create(SingleOnSubscribe<Int> { Log.d(TAG, "thread: " + Thread.currentThread(), Exception()) }).subscribeOn(Schedulers.single())
                 .ignoreElement().blockingAwait()
@@ -41,6 +59,56 @@ open class KotlinActivity : AppCompatActivity() {
 
 
         Log.w("test", list.testRet().toString())
+    }
+
+    private fun execCommand(arr: Array<String>, onOut: (out: String) -> Unit, onErr: (err: String) -> Unit) {
+        val process = Runtime.getRuntime().exec(arr)
+        Log.w(TAG, "exec cmd: $arr")
+//        process.outputStream.write(arr.toString().toByteArray())
+//        process.outputStream.write("echo hello world".toByteArray())
+//        process.outputStream.write("\n".toByteArray())
+//        process.outputStream.flush()
+        Log.w(TAG, "out -> ${process.outputStream.javaClass.canonicalName}")
+        val threadPool = Executors.newCachedThreadPool()
+        threadPool.execute {
+            Log.w(TAG, "threadPool: start")
+            val outStream = BufferedReader(InputStreamReader(process.inputStream))
+            while (true) {
+                if (outStream.ready()) {
+                    val line = outStream.readLine()
+                    Log.w(TAG, "threadPool: outStream readline $line")
+                    if (line.isNotEmpty()) onOut(line)
+                } else {
+//                    Log.w(TAG, "threadPool: outStream not ready")
+                    if (!process.isAlive) {
+                        Log.w(TAG, "threadPool: outStream process died ")
+                        outStream.close()
+                        break
+                    }
+                }
+
+            }
+        }
+
+        threadPool.execute {
+            Log.w(TAG, "threadPool: start")
+            val errStream = BufferedReader(InputStreamReader(process.errorStream))
+            while (true) {
+                if (errStream.ready()) {
+                    val line = errStream.readLine()
+                    Log.w(TAG, "threadPool: errStream readline $line")
+                    if (line.isNotEmpty()) onErr(line)
+                } else {
+//                    Log.w(TAG, "threadPool: errStream not ready")
+                    Log.w(TAG, "errStream alive!")
+                    if (!process.isAlive) {
+                        errStream.close()
+                        break
+                    }
+                }
+
+            }
+        }
     }
 }
 
