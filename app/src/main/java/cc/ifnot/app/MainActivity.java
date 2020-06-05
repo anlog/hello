@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         final String url = "https://api.ipify.org?format=json";
 
         findViewById(android.R.id.content).setOnClickListener(new View.OnClickListener() {

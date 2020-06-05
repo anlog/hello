@@ -1,8 +1,12 @@
 package cc.ifnot.app
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.content.pm.ResolveInfo
 import android.os.Bundle
 import android.util.Log
+import android.util.LogPrinter
 import androidx.appcompat.app.AppCompatActivity
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleOnSubscribe
@@ -28,6 +32,17 @@ open class KotlinActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Log.e(TAG, "r - dump")
+        val it = Intent()
+        it.action = Intent.ACTION_BOOT_COMPLETED
+        val queryBroadcastReceivers = packageManager.queryBroadcastReceivers(it, PackageManager.MATCH_ALL)
+        for (r: ResolveInfo in queryBroadcastReceivers) {
+            r.dump(LogPrinter(Log.ERROR, TAG), " -- ")
+        }
+
+
+        return
 
 
         val arr = arrayOf<String>("echo 'hello world!'")
