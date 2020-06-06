@@ -1,5 +1,7 @@
 package cc.ifnot.libs.threads;
 
+import cc.ifnot.libs.utils.Lg;
+
 public class MyClass {
 
     public static void main(String[] args) {
@@ -12,25 +14,17 @@ public class MyClass {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                System.out.println("-- " + Thread.currentThread());
+                Lg.d("-- " + Thread.currentThread());
             }
         });
-
-        waitRunnable.waitUntilDone();
-        new Thread(waitRunnable).start();
-        System.out.println("-- " + Thread.currentThread());
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 waitRunnable.waitUntilDone();
+                Lg.d("-- " + Thread.currentThread());
             }
         }).start();
-
-        try {
-            Thread.sleep(20);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        new Thread(waitRunnable).start();
     }
 }
