@@ -61,8 +61,6 @@ dependencies {
     // aar would not include the dep
     implementation project(':utils')
 
-    lintPublish project(':utils:utils_lint')
-
 }
 repositories {
     mavenCentral()
