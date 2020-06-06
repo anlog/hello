@@ -1,12 +1,17 @@
 package cc.ifnot.cc.thread;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import cc.ifnot.libs.utils.Lg;
 
+import android.annotation.SuppressLint;
+import android.app.Application;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -79,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +93,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         findViewById(R.id.asyncTask).setOnClickListener(this);
 
+
+        try {
+            @SuppressLint("PrivateApi")
+            Class<?> clz = Class.forName("android.app.ActivityThread");
+            Application app = (Application) clz.getDeclaredMethod("currentApplication").invoke(null);
+            Lg.d("refect: %s", app.getClass().getTypeName());
+        } catch (ClassNotFoundException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
     }
 
 }
