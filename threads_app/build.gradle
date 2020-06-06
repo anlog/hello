@@ -5,13 +5,15 @@ android {
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "cc.ifnot.cc.thread"
+        applicationId "cc.ifnot.app.thread"
         minSdkVersion 16
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        archivesBaseName = "lint_${version}"
+
     }
 
     buildTypes {
@@ -37,16 +39,16 @@ dependencies {
 
     // for lint use, we need implementation aar libs instead
 //    implementation project(':utils:android')
-    implementation(name: "android-${flavor}", ext: 'aar')
+    implementation(name: "lint_${version_name}-${flavor}", ext: 'aar')
     // aar would not include the dep
     implementation project(':utils')
 
 
-    lintPublish project(':log_lint')
+    lintPublish project(':utils:utils_lint')
 }
 repositories {
     mavenCentral()
     flatDir {
-        dirs '../utils/android/build/outputs/aar'
+        dirs '../utils/utils_lint/aar/build/outputs/aar'
     }
 }

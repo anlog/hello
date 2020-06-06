@@ -15,6 +15,11 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
+        archivesBaseName = "lint_${version_name}"
+    }
+
+    packagingOptions {
+        exclude "BuildConfig.class"
     }
 
     buildTypes {
@@ -29,5 +34,5 @@ dependencies {
 
     api project(':utils')
 
-    lintPublish project(':log_lint')
+    lintPublish project(':utils:utils_lint')
 }

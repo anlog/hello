@@ -11,6 +11,6 @@ targetCompatibility = "1.7"
 
 jar {
     manifest {
-        attributes('Lint-Registry-v2': 'cc.ifnot.libs.log_lint.LogIssueRegistry')
+        attributes('Lint-Registry-v2': 'cc.ifnot.libs.utils_lint.LogIssueRegistry')
     }
 }

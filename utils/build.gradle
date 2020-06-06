@@ -7,7 +7,7 @@ dependencies {
     compileOnly deps.lint.api
     compileOnly deps.lint.checks
 //    lintPublish project(':log_lint')
-    implementation project(':log_lint')
+    implementation project(':utils:utils_lint')
 }
 
 sourceCompatibility = "1.7"

@@ -1,4 +1,4 @@
-package cc.ifnot.libs.log_lint;
+package cc.ifnot.libs.utils_lint;
 
 import com.android.tools.lint.client.api.IssueRegistry;
 import com.android.tools.lint.detector.api.Issue;

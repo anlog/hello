@@ -56,17 +56,17 @@ dependencies {
 
     // for lint use, we need implementation aar libs instead
 //    implementation project(':utils:android')
-    implementation(name: "android-${flavor}", ext: 'aar')
+    implementation(name: "lint_${version_name}-${flavor}", ext: 'aar')
     // aar would not include the dep
     implementation project(':utils')
 
 
-    lintPublish project(':log_lint')
+    lintPublish project(':utils:utils_lint')
 
 }
 repositories {
     mavenCentral()
     flatDir {
-        dirs '../utils/android/build/outputs/aar'
+        dirs '../utils/utils_lint/aar/build/outputs/aar'
     }
 }
