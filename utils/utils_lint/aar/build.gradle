@@ -19,7 +19,7 @@ android {
     }
 
     packagingOptions {
-        exclude "BuildConfig.class"
+        exclude "**/BuildConfig.class"
     }
 
     buildTypes {
