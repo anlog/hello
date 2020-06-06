@@ -1,3 +1,6 @@
+include ':utils:android'
+include ':log_lint'
+include ':utils'
 include ':threads'
 include ':annotation'
 rootProject.name='app'

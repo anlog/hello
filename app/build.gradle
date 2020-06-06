@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 29
@@ -53,7 +53,20 @@ dependencies {
     implementation "io.reactivex.rxjava3:rxjava:3.+"
     //noinspection GradleDynamicVersion
     implementation 'io.reactivex.rxjava3:rxandroid:3.+'
+
+    // for lint use, we need implementation aar libs instead
+//    implementation project(':utils:android')
+    implementation(name: "android-${flavor}", ext: 'aar')
+    // aar would not include the dep
+    implementation project(':utils')
+
+
+    lintPublish project(':log_lint')
+
 }
 repositories {
     mavenCentral()
+    flatDir {
+        dirs '../utils/android/build/outputs/aar'
+    }
 }

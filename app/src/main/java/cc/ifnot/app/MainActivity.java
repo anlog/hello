@@ -1,13 +1,12 @@
 package cc.ifnot.app;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import cc.ifnot.libs.utils.Lg;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,8 +17,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,7 +26,8 @@ public class MainActivity extends AppCompatActivity {
     // Used to load the 'native-lib' library on application startup.
     static {
         System.loadLibrary("native-lib");
-        Log.w(TAG, "loadLibrary");
+        Lg.tag(TAG);
+        Lg.w("loadLibrary");
     }
 
     @Override
@@ -38,13 +36,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-
         final String url = "https://api.ipify.org?format=json";
 
         findViewById(android.R.id.content).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.w("http_test", "onClick");
+                Lg.w("onClick");
                 http_test(url);
             }
         });
@@ -71,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        Log.e(TAG, "onCreate");
+        Lg.e("onCreate");
         // Example of a call to a native method
         TextView tv = findViewById(R.id.sample_text);
         tv.setText(stringFromJNI());
@@ -87,16 +84,17 @@ public class MainActivity extends AppCompatActivity {
                 BufferedReader bufferedReader = null;
                 StringBuffer sb = new StringBuffer();
 
-                Log.w("http_test", "begin");
+                Lg.tag("http_test");
+                Lg.w("begin");
                 try {
                     HttpURLConnection urlConnection = (HttpURLConnection) new URL(url).openConnection();
                     inputStream = urlConnection.getInputStream();
-                    Log.w("http_test", "begin1");
+                    Lg.w("begin1");
                     bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
                     String line;
                     while ((line = bufferedReader.readLine()) != null) {
-                        Log.w("http_test", line);
+                        Lg.w(line);
                         sb.append(line);
                         sb.append("\n");
                     }
@@ -120,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
 
-                    Log.w("http_test", "end");
+                    Lg.w("end");
                     try {
                         if (bufferedReader != null) {
                             bufferedReader.close();
@@ -132,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    Log.w("http_test", "end1");
+                    Lg.w("end1");
                 }
             }
         });

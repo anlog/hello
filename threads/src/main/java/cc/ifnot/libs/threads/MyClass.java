@@ -4,31 +4,6 @@ public class MyClass {
 
     public static void main(String[] args) {
 
-        MyRunnable myRunnable = new MyRunnable(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println(" -- start");
-                try {
-                    Thread.sleep(2);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                System.out.println(" -- end");
-            }
-        });
-
-        myRunnable.testRun();
-        try {
-            Thread.sleep(2);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        new Thread(myRunnable).start();
-
-
-
-        if(true) return;
-
         final WaitRunnable waitRunnable = new WaitRunnable(new Runnable() {
             @Override
             public void run() {

@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.util.LogPrinter
 import androidx.appcompat.app.AppCompatActivity
+import cc.ifnot.libs.utils.Lg
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.core.SingleOnSubscribe
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -30,10 +31,14 @@ open class KotlinActivity : AppCompatActivity() {
         private val TAG = "KotlinActivity"
     }
 
+    init {
+        Lg.tag(TAG)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Log.e(TAG, "r - dump")
+        Lg.e("r - dump")
         val it = Intent()
         it.action = Intent.ACTION_BOOT_COMPLETED
         val queryBroadcastReceivers = packageManager.queryBroadcastReceivers(it, PackageManager.MATCH_ALL)
