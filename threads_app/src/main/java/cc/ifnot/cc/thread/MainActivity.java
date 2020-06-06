@@ -12,10 +12,9 @@ import android.os.Bundle;
 import android.view.View;
 
 import java.lang.reflect.InvocationTargetException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -100,6 +99,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Application app = (Application) clz.getDeclaredMethod("currentApplication").invoke(null);
             Lg.d("refect: %s", app.getClass().getTypeName());
         } catch (ClassNotFoundException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+
+            byte[] bytes = digest.digest("12345".getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (byte b : bytes) {
+                sb.append(Integer.toHexString(b & 0xff));
+            }
+
+            Lg.d("digest md5: %s", sb.toString());
+        } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
     }
