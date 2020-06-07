@@ -11,7 +11,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -114,6 +116,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Lg.d("digest md5: %s", sb.toString());
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
+        }
+
+        testCode();
+    }
+
+    private void testCode() {
+        ClassLoader classLoader = getClassLoader();
+        Lg.e("findClassLoaders: %s - %s", classLoader.toString(), classLoader.getClass().getTypeName());
+        findClassLoaders(classLoader.getParent());
+    }
+
+    private void findClassLoaders(ClassLoader classLoader) {
+        if (classLoader != null) {
+
+            try {
+                Method findLoadedClass = ClassLoader.class.getDeclaredMethod("findLoadedClass", String.class);
+                findLoadedClass.setAccessible(true);
+                Object o = findLoadedClass.invoke(classLoader, "java.lang.Object");
+                Lg.e("findLoadedClass: %s", o != null ? o.toString() : null);
+
+                Field classes = ClassLoader.class.getDeclaredField("classes");
+                classes.setAccessible(true);
+                Object v = classes.get(classLoader);
+                Lg.e("classes: %s", v);
+
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | NoSuchFieldException e) {
+                e.printStackTrace();
+            }
+
+            Lg.e("findClassLoaders: %s - %s", classLoader.toString(), classLoader.getClass().getTypeName());
+            findClassLoaders(classLoader.getParent());
         }
     }
 
