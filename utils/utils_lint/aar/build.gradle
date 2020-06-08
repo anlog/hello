@@ -30,6 +30,13 @@ android {
     }
 }
 
+task androidJar(type: Jar, dependsOn: assemble) {
+    from "$buildDir/intermediates/classes"
+    exclude '**/BuildConfig.class'
+    exclude '**/R.class'
+    exclude '**/R$*.class'
+}
+
 dependencies {
 
     api project(':utils')
