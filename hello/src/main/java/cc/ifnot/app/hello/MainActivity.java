@@ -2,6 +2,9 @@ package cc.ifnot.app.hello;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
+import android.content.Context;
+import android.content.pm.ShortcutInfo;
+import android.content.pm.ShortcutManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.AdaptiveIconDrawable;
@@ -22,7 +25,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import cc.ifnot.libs.utils.Lg;
 
@@ -35,12 +40,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.asyncTask:
-                // asyncTask
-                Lg.d("onClick asyncTask");
-                MyAsyncTask myAsyncTask = new MyAsyncTask();
-                myAsyncTask.execute("a", "b", "c");
+            case R.id.shortcuts:
+                ShortcutManager manager = (ShortcutManager) getSystemService(Context.SHORTCUT_SERVICE);
 
+                List<String> toBeDisabled = new ArrayList<>();
+
+                List<ShortcutInfo> manifestShortcuts = manager.getManifestShortcuts();
+                for (int i = 0; i < manifestShortcuts.size(); i++) {
+                    if (manifestShortcuts.get(i).isEnabled()) {
+                        toBeDisabled.add(manifestShortcuts.get(i).getId());
+                    }
+                }
+
+                for (ShortcutInfo i : manager.getDynamicShortcuts()) {
+                    if (i.isEnabled()) {
+                        toBeDisabled.add(i.getId());
+                    }
+                }
+
+                Lg.d("disableShortcuts - %s", toBeDisabled.toArray());
+                manager.disableShortcuts(Arrays.asList("shortcuts_dynamic"));
                 break;
 
         }
@@ -53,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         Lg.d("onCreate");
 
-        findViewById(R.id.asyncTask).setOnClickListener(this);
+        findViewById(R.id.shortcuts).setOnClickListener(this);
 
         ImageView iv = findViewById(R.id.iv);
         iv.setImageBitmap(

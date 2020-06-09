@@ -12,10 +12,10 @@
         android:layout_height="400dp"
         android:background="@color/colorAccent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/asyncTask" />
+        app:layout_constraintTop_toBottomOf="@id/shortcut" />
 
     <Button
-        android:id="@+id/asyncTask"
+        android:id="@+id/shortcuts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="AsyncTask"

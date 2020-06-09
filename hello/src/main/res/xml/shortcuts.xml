@@ -1,0 +1,19 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher_round"
+        android:shortcutDisabledMessage="@string/disabled"
+        android:shortcutId="shortcuts_0"
+        android:shortcutLongLabel="@string/long_label"
+        android:shortcutShortLabel="@string/short_label">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="cc.ifnot.app.hello.shortcuts.StaticShortcutsActivity"
+            android:targetPackage="cc.ifnot.app.hello" />
+        <!-- If your shortcut is associated with multiple intents, include them
+             here. The last intent in the list determines what the user sees when
+             they launch this shortcut. -->
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+    <!-- Specify more shortcuts here. -->
+</shortcuts>
