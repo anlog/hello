@@ -1,4 +1,4 @@
-package cc.ifnot.cc.thread;
+package cc.ifnot.app.hello;
 
 import android.app.Application;
 

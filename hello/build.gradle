@@ -5,8 +5,8 @@ android {
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "cc.ifnot.app.thread"
-        minSdkVersion 28
+        applicationId "cc.ifnot.app.helo"
+        minSdkVersion 26
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
