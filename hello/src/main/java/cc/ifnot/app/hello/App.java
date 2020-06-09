@@ -1,8 +1,10 @@
 package cc.ifnot.app.hello;
 
 import android.app.Application;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
@@ -28,6 +30,16 @@ public class App extends Application {
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         initShortCuts(base);
+
+        ComponentName app1 = new ComponentName(this, MainActivity.class);
+        ComponentName app2 = new ComponentName(this, MainActivity2.class);
+        PackageManager packageManager = getPackageManager();
+        Lg.d("app1: %s -- app2: %s", packageManager.getComponentEnabledSetting(app1),
+                packageManager.getComponentEnabledSetting(app2));
+        packageManager.setComponentEnabledSetting(app2, PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP);
+        Lg.d("set app1: %s -- app2: %s", packageManager.getComponentEnabledSetting(app1),
+                packageManager.getComponentEnabledSetting(app2));
     }
 
     private void initShortCuts(final Context base) {

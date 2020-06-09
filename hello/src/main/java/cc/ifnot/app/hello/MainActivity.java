@@ -2,7 +2,9 @@ package cc.ifnot.app.hello;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.Bitmap;
@@ -61,7 +63,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Lg.d("disableShortcuts - %s", toBeDisabled.toArray());
                 manager.disableShortcuts(Arrays.asList("shortcuts_dynamic"));
                 break;
-
+            case R.id.component:
+                PackageManager packageManager = getPackageManager();
+                ComponentName app2 = new ComponentName(this, MainActivity2.class);
+                Lg.d("app2 state: %d", packageManager.getComponentEnabledSetting(app2));
+                if (packageManager.getComponentEnabledSetting(app2) == PackageManager.COMPONENT_ENABLED_STATE_DISABLED) {
+                    Lg.d("set app2 state: %d", PackageManager.COMPONENT_ENABLED_STATE_ENABLED);
+                    packageManager.setComponentEnabledSetting(app2, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+                } else {
+                    Lg.d("set app2 state: %d", PackageManager.COMPONENT_ENABLED_STATE_DISABLED);
+                    packageManager.setComponentEnabledSetting(app2, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+                }
+                Lg.d("app2 state: %d", packageManager.getComponentEnabledSetting(app2));
+                break;
         }
     }
 
@@ -80,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 getBitmapFromDrawable(R.mipmap.ic_launcher_round)
         );
 
+        findViewById(R.id.component).setOnClickListener(this);
 
         try {
             @SuppressLint("PrivateApi")

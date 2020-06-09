@@ -18,7 +18,15 @@
         android:id="@+id/shortcuts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="AsyncTask"
+        android:text="shortcuts"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/component"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="enable component"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
