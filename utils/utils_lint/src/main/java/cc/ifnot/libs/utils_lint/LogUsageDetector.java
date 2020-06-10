@@ -261,16 +261,17 @@ public class LogUsageDetector extends Detector implements Detector.UastScanner {
         }
 
         int startIndexOfArguments = 1;
-        UExpression formatStringArg = arguments.get(0);
-        if (isSubclassOf(context, formatStringArg, Throwable.class)) {
-            if (numArguments == 1) {
-                return;
+
+        for (UExpression u : arguments) {
+            if (isSubclassOf(context, u, Throwable.class)) {
+                if (numArguments == 1) {
+                    return;
+                }
+                startIndexOfArguments++;
             }
-            formatStringArg = arguments.get(1);
-            startIndexOfArguments++;
         }
 
-        String formatString = evaluateString(context, formatStringArg, true);
+        String formatString = evaluateString(context, arguments.get(0), true);
         // We passed for example a method call
         if (formatString == null) {
             return;

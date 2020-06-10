@@ -24,6 +24,9 @@ public class App extends Application {
 
     static {
         Lg.tag("App");
+        Lg.showMore(true);
+        Lg.e("static");
+        Lg.d("%s", "throwable", new Exception());
     }
 
     @Override
@@ -70,6 +73,18 @@ public class App extends Application {
 
     @Override
     public void onCreate() {
+        Lg.d("app onCreate");
+//        Map<Thread, StackTraceElement[]> allStackTraces = Thread.getAllStackTraces();
+//        Lg.d("==================================================");
+//        for (Thread t : allStackTraces.keySet()) {
+//            Lg.d("==================================================");
+//            Lg.d("t: %s", t);
+//            StackTraceElement[] stackTraceElements = allStackTraces.get(t);
+//            for (StackTraceElement s : stackTraceElements) {
+//                Lg.d("----------------------------------------");
+//                Lg.e("stackTraceElements： %s", s);
+//            }
+//        }
         super.onCreate();
     }
 }
