@@ -54,7 +54,7 @@ open class ClientService : Service() {
                     .map { UUID.nameUUIDFromBytes(byteArrayOf(it.inc().toByte(), it.dec().toByte())).toString() }
                     .toString()
                     .map { UUID.nameUUIDFromBytes(byteArrayOf(it.inc().toByte(), it.dec().toByte())).toString() }
-                    .joinToString(separator = "\n") { "\"$it$it$it$it\"" })
+                    .joinToString(separator = "\n") { "\"$it\"" })
             Lg.w("doTest: $i end")
         }
 
