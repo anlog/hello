@@ -1,7 +1,9 @@
+import a.cs
 import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import cc.ifnot.libs.utils.Lg
 
 /**
  * author: dp
@@ -11,26 +13,26 @@ import android.util.Log
 
 open class App() : Application() {
 
-    constructor(o: Any) : this() {
-        Log.w(TAG, "constructor")
+    init {
+        Lg.tag("App")
+        Lg.showMore(true)
     }
 
-
-    companion object {
-        private val TAG = "App"
+    constructor(o: Any) : this() {
+        Lg.w("constructor")
     }
 
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
-        Log.w(TAG, "attachBaseContext")
+        Lg.w("attachBaseContext")
 
     }
 
     override fun onCreate() {
         super.onCreate()
 
-        Log.w(TAG, "onCreate startService")
-        startService(Intent().setClass(this, a.cs::class.java))
+        Lg.w("onCreate startService")
+        startService(Intent().setClass(this, cs::class.java))
     }
 
     fun hello(a: String, b: Int) {

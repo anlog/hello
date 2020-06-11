@@ -118,10 +118,11 @@ public class Lg {
             }
 
             msg = more ?
-                    String.format(Locale.getDefault(), "%s[%s:%d]: %s",
+                    String.format(Locale.getDefault(), "%s[%s:%d@%s]: %s",
                             stack.getFileName() == null ? "Anonymous" :
-                                    stack.getFileName().replace(".java", ""),
-                            stack.getMethodName(), stack.getLineNumber(), msg) :
+                                    stack.getFileName().replace(".java", "")
+                                            .replace(".kt", ""),
+                            stack.getMethodName(), stack.getLineNumber(), thread.getName(), msg) :
                     String.format(Locale.getDefault(), "%s: %s", stack.getClassName(), msg);
 
             if (isAndroid) {
@@ -176,14 +177,6 @@ public class Lg {
         }
         TAG = tag;
         init = true;
-    }
-
-    public static String tag() {
-        return TAG;
-    }
-
-    public static boolean showMore() {
-        return more;
     }
 
     public static void showMore(boolean more) {

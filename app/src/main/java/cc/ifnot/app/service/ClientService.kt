@@ -1,5 +1,6 @@
 package cc.ifnot.app.service
 
+import a.ss
 import android.app.Service
 import android.content.ComponentName
 import android.content.Context
@@ -8,6 +9,7 @@ import android.content.ServiceConnection
 import android.os.IBinder
 import android.util.Log
 import cc.ifnot.app.ITest
+import cc.ifnot.libs.utils.Lg
 
 /**
  * author: dp
@@ -23,16 +25,16 @@ open class ClientService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        Log.w(TAG, "onCreate")
+        Lg.w("onCreate")
 
-        bindService(Intent().setClass(applicationContext, a.ss::class.java),
+        bindService(Intent().setClass(applicationContext, ss::class.java),
                 object : ServiceConnection {
                     override fun onServiceDisconnected(name: ComponentName?) {
-                        Log.w(TAG, "onServiceDisconnected")
+                        Lg.w("onServiceDisconnected")
                     }
 
                     override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-                        Log.w(TAG, "onServiceConnected")
+                        Lg.w("onServiceConnected")
 
                         doTest(ITest.Stub.asInterface(service))
 
@@ -43,11 +45,11 @@ open class ClientService : Service() {
 
     private fun doTest(service: ITest) {
         for (i in 1..100) {
-            Log.w(TAG, "doTest: $i start")
+            Lg.w("doTest: $i start")
             service.iTest0(i)
             service.iTest1(i)
-            Log.w(TAG, "doTest: iTest2 ${service.iTest2(i)}")
-            Log.w(TAG, "doTest: $i end")
+            Lg.w("doTest: iTest2 ${service.iTest2(i)}")
+            Lg.w("doTest: $i end")
         }
 
     }

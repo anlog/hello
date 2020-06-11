@@ -4,8 +4,8 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.os.SystemClock
-import android.util.Log
 import cc.ifnot.app.ITest
+import cc.ifnot.libs.utils.Lg
 
 /**
  * author: dp
@@ -24,22 +24,22 @@ open class ServerService : Service() {
 
     class ServerServiceProxy : ITest.Stub() {
         override fun iTest0(a: Int) {
-            Log.w(TAG, "iTest0 start")
+            Lg.w("iTest0 start")
             SystemClock.sleep(100)
-            Log.w(TAG, "iTest0 end")
+            Lg.w("iTest0 end")
         }
 
         override fun iTest1(a: Int) {
-            Log.w(TAG, "iTest1 start")
+            Lg.w("iTest1 start")
             SystemClock.sleep(100)
-            Log.w(TAG, "iTest1 end")
+            Lg.w("iTest1 end")
 
         }
 
         override fun iTest2(a: Int): Int {
-            Log.w(TAG, "iTest2 start")
+            Lg.w("iTest2 start")
             SystemClock.sleep(100)
-            Log.w(TAG, "iTest2 end")
+            Lg.w("iTest2 end")
             return a * a
         }
 
