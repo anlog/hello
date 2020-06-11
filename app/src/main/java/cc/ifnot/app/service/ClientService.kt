@@ -10,6 +10,7 @@ import android.os.IBinder
 import android.util.Log
 import cc.ifnot.app.ITest
 import cc.ifnot.libs.utils.Lg
+import java.util.*
 
 /**
  * author: dp
@@ -46,9 +47,14 @@ open class ClientService : Service() {
     private fun doTest(service: ITest) {
         for (i in 1..100) {
             Lg.w("doTest: $i start")
-            service.iTest0(i)
-            service.iTest1(i)
-            Lg.w("doTest: iTest2 ${service.iTest2(i)}")
+//            service.iTest0(i)
+//            service.iTest1(i)
+//            Lg.w("doTest: iTest2 ${service.iTest2(i)}")
+            service.transact(String.let { UUID.randomUUID().toString() }
+                    .map { UUID.nameUUIDFromBytes(byteArrayOf(it.inc().toByte(), it.dec().toByte())).toString() }
+                    .toString()
+                    .map { UUID.nameUUIDFromBytes(byteArrayOf(it.inc().toByte(), it.dec().toByte())).toString() }
+                    .joinToString(separator = "\n") { "\"$it$it$it$it\"" })
             Lg.w("doTest: $i end")
         }
 
