@@ -2,11 +2,9 @@ package cc.ifnot.app
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.content.pm.ResolveInfo
 import android.os.Bundle
 import android.util.Log
-import android.util.LogPrinter
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import cc.ifnot.libs.utils.Lg
 import io.reactivex.rxjava3.core.Single
@@ -39,12 +37,16 @@ open class KotlinActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         Lg.e("r - dump")
-        val it = Intent()
-        it.action = Intent.ACTION_BOOT_COMPLETED
-        val queryBroadcastReceivers = packageManager.queryBroadcastReceivers(it, PackageManager.MATCH_ALL)
-        for (r: ResolveInfo in queryBroadcastReceivers) {
-            r.dump(LogPrinter(Log.ERROR, TAG), " -- ")
+
+        findViewById<View>(android.R.id.content).setOnClickListener {
+            startActivity(Intent(this, a.m::class.java))
         }
+//        val it = Intent()
+//        it.action = Intent.ACTION_BOOT_COMPLETED
+//        val queryBroadcastReceivers = packageManager.queryBroadcastReceivers(it, PackageManager.MATCH_ALL)
+//        for (r: ResolveInfo in queryBroadcastReceivers) {
+//            r.dump(LogPrinter(Log.ERROR, TAG), " -- ")
+//        }
 
 
         return

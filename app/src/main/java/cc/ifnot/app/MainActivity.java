@@ -1,12 +1,12 @@
 package cc.ifnot.app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import cc.ifnot.libs.utils.Lg;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,6 +18,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.Executors;
+
+import cc.ifnot.libs.utils.Lg;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,6 +39,14 @@ public class MainActivity extends AppCompatActivity {
 
 
         final String url = "https://api.ipify.org?format=json";
+
+        findViewById(R.id.aidl_test).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Lg.w("aidl_test");
+                startService(new Intent().setClass(getApplicationContext(), a.cs.class));
+            }
+        });
 
         findViewById(android.R.id.content).setOnClickListener(new View.OnClickListener() {
             @Override

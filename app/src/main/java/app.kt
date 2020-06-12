@@ -2,7 +2,6 @@ import a.cs
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import cc.ifnot.libs.utils.Lg
 
 /**
@@ -26,13 +25,11 @@ open class App() : Application() {
         super.attachBaseContext(base)
         Lg.w("attachBaseContext")
 
+        Lg.w("mapLibraryName: ${System.mapLibraryName("native-lib")}")
     }
 
     override fun onCreate() {
         super.onCreate()
-
-        Lg.w("onCreate startService")
-        startService(Intent().setClass(this, cs::class.java))
     }
 
     fun hello(a: String, b: Int) {

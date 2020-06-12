@@ -19,6 +19,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name="a.m" />
+
         <service
             android:name="a.ss"
             android:enabled="true"
