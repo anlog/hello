@@ -68,7 +68,7 @@ public class Lg {
     }
 
 
-    public static void o(Object msg, int level) {
+    private static void o(Object msg, int level) {
         if (msg instanceof Throwable) {
             if (isAndroid) {
                 try {
@@ -197,19 +197,39 @@ public class Lg {
         wrap(INFO, format, msg);
     }
 
+    public static void i(String msg) {
+        o(msg, INFO);
+    }
+
     public static void v(String format, Object... msg) {
         wrap(VERBOSE, format, msg);
+    }
+
+    public static void v(String msg) {
+        o(msg, INFO);
     }
 
     public static void d(String format, Object... msg) {
         wrap(DEBUG, format, msg);
     }
 
+    public static void d(String msg) {
+        o(msg, INFO);
+    }
+
     public static void w(String format, Object... msg) {
         wrap(WARN, format, msg);
     }
 
+    public static void w(String msg) {
+        o(msg, INFO);
+    }
+
     public static void e(String format, Object... msg) {
         wrap(ERROR, format, msg);
+    }
+
+    public static void e(String msg) {
+        o(msg, INFO);
     }
 }
