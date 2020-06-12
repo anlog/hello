@@ -9,39 +9,31 @@ import java.util.List;
 import java.util.Locale;
 
 public class Lg {
-    private static String TAG = "Lg";
-    private static boolean init = false;
-
-    private static boolean isAndroid;
-    private static boolean more = false;
-
     /**
      * Priority constant for the println method; use Log.v.
      */
     private static final int VERBOSE = 2;
-
     /**
      * Priority constant for the println method; use Log.d.
      */
     private static final int DEBUG = 3;
-
     /**
      * Priority constant for the println method; use Log.i.
      */
     private static final int INFO = 4;
-
     /**
      * Priority constant for the println method; use Log.w.
      */
     private static final int WARN = 5;
-
     /**
      * Priority constant for the println method; use Log.e.
      */
     private static final int ERROR = 6;
-
     private static final int BASE = 29;
-
+    private static String TAG = "Lg";
+    private static boolean init = false;
+    private static boolean isAndroid;
+    private static boolean more = false;
     private static Method v;
     private static Method vt;
     private static Method d;
@@ -83,6 +75,7 @@ public class Lg {
                     switch (level) {
                         case VERBOSE:
                             vt.invoke(null, TAG, "", msg);
+                            break;
                         case DEBUG:
                             dt.invoke(null, TAG, "", msg);
                             break;
@@ -194,9 +187,9 @@ public class Lg {
             }
         }
 
-        o(new Formatter().format(format, logs.toArray()).toString(), INFO);
+        o(new Formatter().format(format, logs.toArray()).toString(), level);
         for (Throwable t : throwables) {
-            o(t, INFO);
+            o(t, level);
         }
     }
 
@@ -210,7 +203,6 @@ public class Lg {
 
     public static void d(String format, Object... msg) {
         wrap(DEBUG, format, msg);
-        o(new Formatter().format(format, msg).toString(), DEBUG);
     }
 
     public static void w(String format, Object... msg) {
