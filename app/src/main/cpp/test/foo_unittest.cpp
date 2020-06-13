@@ -21,3 +21,6 @@ TEST(FooTest, OneOne) {
     EXPECT_EQ(2, add(1, 1));
 }
 
+TEST(Foo, dltest) {
+    dl_test();
+}

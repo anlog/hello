@@ -7,4 +7,6 @@
 
 int add(int a, int b);
 
+void dl_test();
+
 #endif //ANDROID_FOO_H
