@@ -121,6 +121,10 @@ void dl_test() {
     X(AStatus_getMessage);
     X(AStatus_getStatus);
     X(AServiceManager_getService);
+    AIBinder *binder = AServiceManager_getService("activity");
+    printf("AServiceManager_getService: %p: \n", binder);
+    AIBinder_dump(binder, 1, NULL, 0);
+    
     int (*a)(int *b);
     X(a);
 #undef X
