@@ -58,6 +58,12 @@ add_custom_command(TARGET ip-up-vpn POST_BUILD
         #        COMMAND ${ADB} shell /data/local/tmp/${ANDROID_ABI}/ip-up-vpn
         COMMAND echo true)
 
+add_library(foo
+        SHARED
+        foo.cpp foo_jni.cpp)
+target_link_libraries(foo
+        ${log-lib})
+
 # add gtest
 set(GOOGLETEST_ROOT ${ANDROID_NDK}/sources/third_party/googletest)
 add_library(gtest STATIC ${GOOGLETEST_ROOT}/src/gtest_main.cc ${GOOGLETEST_ROOT}/src/gtest-all.cc)
@@ -67,8 +73,7 @@ target_include_directories(gtest PUBLIC ${GOOGLETEST_ROOT}/include)
 add_executable(footest test/foo_unittest.cpp foo.cpp)
 target_link_libraries(footest gtest)
 
-
-find_program(ADB adb)
+#find_program(ADB adb)
 add_custom_command(TARGET footest POST_BUILD COMMENT "POST_BUILD" VERBATIM
         COMMAND ${ADB} shell mkdir -p /data/local/tmp/${ANDROID_ABI}
         COMMAND ${ADB} push $<TARGET_FILE:native-lib> /data/local/tmp/${ANDROID_ABI}/

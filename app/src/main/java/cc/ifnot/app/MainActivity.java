@@ -1,8 +1,11 @@
 package cc.ifnot.app;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.view.View;
 import android.widget.TextView;
 
@@ -19,6 +22,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.Executors;
 
+import cc.ifnot.app.jni.FooWrap;
 import cc.ifnot.libs.utils.Lg;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
         Lg.w("loadLibrary");
     }
 
+    private TextView tv;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,11 +46,32 @@ public class MainActivity extends AppCompatActivity {
 
         final String url = "https://api.ipify.org?format=json";
 
+        tv = findViewById(R.id.sample_text);
+
         findViewById(R.id.aidl_test).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Lg.w("aidl_test");
                 startService(new Intent().setClass(getApplicationContext(), a.cs.class));
+            }
+        });
+//        getSystemService(Context.ACCOUNT_SERVICE)
+
+        findViewById(R.id.binder_test).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //        ActivityManager activity = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+                IBinder activity = FooWrap.binder("power");
+                if (activity == null) {
+                    Lg.w("binder is null");
+                    return;
+                }
+                try {
+                    Lg.w("binder: %s", activity.getInterfaceDescriptor());
+                    tv.setText(activity.getInterfaceDescriptor());
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -80,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
 
         Lg.e("onCreate");
         // Example of a call to a native method
-        TextView tv = findViewById(R.id.sample_text);
         tv.setText(stringFromJNI());
 
 
