@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //        ActivityManager activity = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-                IBinder activity = FooWrap.binder("power");
+                IBinder activity = FooWrap.binder("dnsresolver");
                 if (activity == null) {
                     Lg.w("binder is null");
                     return;

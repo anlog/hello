@@ -83,3 +83,25 @@ add_custom_command(TARGET footest POST_BUILD COMMENT "POST_BUILD" VERBATIM
         COMMAND ${ADB} shell "LD_LIBRARY_PATH=/data/local/tmp/${ANDROID_ABI} /data/local/tmp/${ANDROID_ABI}/footest")
 #        COMMAND ${ADB} shell "LD_LIBRARY_PATH=/data/local/tmp/${ANDROID_ABI} chmod a+x /data/local/tmp/${ANDROID_ABI}/footest /data/local/tmp/${ANDROID_ABI}/footest")
 
+# go_jni test
+
+## this is for jni indexing
+add_library(go_jni go_jni/go_jni.cpp)
+
+## custom go build for go_jni
+add_custom_target(libgo_jni.so WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/go_jni" COMMENT "Building go_jni" VERBATIM COMMAND
+        ${ANDROID_NDK}/prebuilt/windows-x86_64/bin/make.exe
+        ANDROID_ARCH_NAME=${ANDROID_ARCH_NAME}
+        ANDROID_C_COMPILER=${ANDROID_C_COMPILER}
+        ANDROID_TOOLCHAIN_ROOT=${ANDROID_TOOLCHAIN_ROOT}
+        ANDROID_LLVM_TRIPLE=${ANDROID_LLVM_TRIPLE}
+        ANDROID_SYSROOT=${ANDROID_SYSROOT}
+        ANDROID_PACKAGE_NAME=${ANDROID_PACKAGE_NAME}
+        VERSION=${VERSION}
+        CFLAGS=${CMAKE_C_FLAGS}\ -Wno-unused-command-line-argument
+        LDFLAGS=${CMAKE_SHARED_LINKER_FLAGS}\ -fuse-ld=gold
+        DESTDIR=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+        BUILDDIR=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/../generated-src
+        )
+
+add_dependencies(footest libgo_jni.so)
