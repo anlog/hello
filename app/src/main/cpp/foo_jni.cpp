@@ -35,13 +35,13 @@ JNINativeMethod foo_methods[] = {
 
 int initJni(JNIEnv *env) {
     char className[] = "cc/ifnot/app/jni/FooWrap";
-    jclass clazz = env->FindClass((const char *) className);\
+    jclass clazz = env->FindClass((const char *) className);
     if (clazz == NULL) {
         ALOGE("initJni: Native registration unable to find class '%s'; aborting...", className);
         return JNI_ERR;
     }
 
-    size_t numMethods = sizeof(foo_methods) / sizeof(*foo_methods);
+    int numMethods = sizeof(foo_methods) / sizeof(*foo_methods);
     ALOGV("Registering %s's %d native methods...", className,
           numMethods);
     int result = env->RegisterNatives(clazz, foo_methods, numMethods);

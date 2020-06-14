@@ -20,9 +20,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Locale;
 import java.util.concurrent.Executors;
 
 import cc.ifnot.app.jni.FooWrap;
+import cc.ifnot.app.jni.GoJniWrap;
 import cc.ifnot.libs.utils.Lg;
 
 public class MainActivity extends AppCompatActivity {
@@ -72,6 +74,15 @@ public class MainActivity extends AppCompatActivity {
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
+            }
+        });
+
+        findViewById(R.id.go_jni_test).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Lg.w("onClick: go_jni_test");
+                tv.setText(String.format(Locale.getDefault(), "%s: %d + %d = %d",
+                        GoJniWrap.go_jni_hello("world"), 12, 45, GoJniWrap.go_jni_add(12, 45)));
             }
         });
 

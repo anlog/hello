@@ -45,9 +45,9 @@ func go_add(a, b int) int {
 }
 
 //export go_hello
-func go_hello(hello string) string {
+func go_hello(hello string)  *C.char {
 	lg.D.Println("go_hello called with param: " + hello)
-	return "go_hello: " + hello
+	return C.CString("go_hello: " + hello)
 }
 
 func main() {}

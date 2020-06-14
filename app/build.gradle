@@ -20,21 +20,28 @@ android {
             cmake {
 //                targets footest
                 arguments "-DVERSION=${version_name}", "-DGRADLE_USER_HOME=${project.gradle.gradleUserHomeDir}"
-                path "src/main/cpp/CMakeLists.txt"
-                cppFlags ""
             }
         }
     }
 
     buildTypes {
         release {
+            buildConfigField "String", "VERSION", "${version_name}"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
+            buildConfigField "String", "VERSION", "\"${version_name}\""
             minifyEnabled false
         }
     }
+
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+        }
+    }
+
 }
 
 dependencies {

@@ -20,6 +20,7 @@ export GOPATH := $(CURDIR)/go
 default: $(DESTDIR)/libgo_jni_${VERSION}.so
 
 $(DESTDIR)/libgo_jni_${VERSION}.so: go.mod
-	go build -x -tags linux -ldflags="" -v -trimpath -o "$@" -buildmode c-shared
+	go env
+	go build -x -v -tags linux -trimpath -o "$@" -buildmode c-shared
 
 .DELETE_ON_ERROR:
