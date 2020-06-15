@@ -10,12 +10,12 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionCode version_code
+        versionName version_name
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
-        archivesBaseName = "lint_${version_name}"
+        archivesBaseName = "lint"
     }
 
     packagingOptions {
@@ -41,5 +41,6 @@ dependencies {
 
     api project(':utils')
 
+    lintChecks project(':utils:utils_lint')
     lintPublish project(':utils:utils_lint')
 }

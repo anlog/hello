@@ -10,8 +10,8 @@ android {
         applicationId "cc.ifnot.app"
         minSdkVersion 27
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionCode version_code
+        versionName version_name
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         archivesBaseName = "app_${version_name}"
@@ -63,8 +63,10 @@ dependencies {
     implementation 'io.reactivex.rxjava3:rxandroid:3.+'
 
     // for lint use, we need implementation aar libs instead
-//    implementation project(':utils:android')
-    implementation(name: "lint_${version_name}-${flavor}", ext: 'aar')
+//    implementation project(':utils:utils_lint')
+//    implementation(':utils:utils_lint:aar')
+    implementation(name: "lint-${flavor}", ext: 'aar')
+//    implementation(name: "lint_${version_name}-${flavor}", ext: 'aar')
     // aar would not include the dep
     implementation project(':utils')
 
