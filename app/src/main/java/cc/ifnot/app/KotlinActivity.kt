@@ -33,6 +33,22 @@ open class KotlinActivity : AppCompatActivity() {
         Lg.tag(TAG)
     }
 
+
+    interface OnXX {
+        fun xx() : Int
+    }
+    object OXX: OnXX {
+        override fun xx(): Int {
+            return 0
+        }
+    }
+
+    fun testOnXX(onxx: OnXX) {
+        //
+    }
+    fun a() = testOnXX(OXX)
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -47,6 +63,11 @@ open class KotlinActivity : AppCompatActivity() {
 //        for (r: ResolveInfo in queryBroadcastReceivers) {
 //            r.dump(LogPrinter(Log.ERROR, TAG), " -- ")
 //        }
+
+        val fileList = fileList()
+        for (f in fileList) {
+            Lg.d("file: $f")
+        }
 
 
         return
