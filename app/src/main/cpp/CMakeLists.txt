@@ -51,13 +51,6 @@ target_link_libraries(ip-up-vpn
 message("ANDROID_SDK_ROOT: ${ANDROID_SDK_ROOT}") # ANDROID_SDK_ROOT should be passed as variable to this script.
 find_program(ADB NAMES adb PATHS ${ANDROID_SDK_ROOT}/platform-tools)
 
-add_custom_command(TARGET ip-up-vpn POST_BUILD
-        COMMAND ${ADB} get-state
-        COMMAND ${ADB} push $<TARGET_FILE:ip-up-vpn> /data/local/tmp/${ANDROID_ABI}/
-        COMMAND ${ADB} shell \"chmod a+x /data/local/tmp/${ANDROID_ABI}/ip-up-vpn\"
-        #        COMMAND ${ADB} shell /data/local/tmp/${ANDROID_ABI}/ip-up-vpn
-        COMMAND echo true)
-
 add_library(foo
         SHARED
         foo.cpp foo_jni.cpp)
@@ -88,9 +81,12 @@ add_custom_command(TARGET footest POST_BUILD COMMENT "POST_BUILD" VERBATIM
 ## this is for jni indexing
 add_library(go_jni go_jni/go_jni.c)
 
+string(TOLOWER ${CMAKE_HOST_SYSTEM_NAME} OS)
+string(TOLOWER ${CMAKE_HOST_SYSTEM_PROCESSOR} ARCH)
+
 ## custom go build for go_jni
 add_custom_target(libgo_jni_${VERSION}.so WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/go_jni" COMMENT "Building go_jni" VERBATIM COMMAND
-        ${ANDROID_NDK}/prebuilt/windows-x86_64/bin/make.exe
+        ${ANDROID_NDK}/prebuilt/${OS}-${ARCH}/bin/make
         ANDROID_ARCH_NAME=${ANDROID_ARCH_NAME}
         ANDROID_C_COMPILER=${ANDROID_C_COMPILER}
         ANDROID_TOOLCHAIN_ROOT=${ANDROID_TOOLCHAIN_ROOT}
