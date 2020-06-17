@@ -1,9 +1,13 @@
+include ':app'
+include ':hello'
 include ':libs'
+
 include ':utils'
 include ':utils:utils_lint'
 include ':utils:utils_lint:aar'
-include ':hello'
-include ':threads'
-include ':annotation'
+
+include ':java'
+include ':java:threads'
+include ':java:annotation'
+
 rootProject.name='android'
-include ':app'
