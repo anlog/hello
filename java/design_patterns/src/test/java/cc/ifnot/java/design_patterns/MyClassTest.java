@@ -22,6 +22,10 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
 import cc.ifnot.java.design_patterns.singleton.EnumSt;
+import cc.ifnot.java.design_patterns.singleton.FailSt;
+import cc.ifnot.java.design_patterns.singleton.InitializingOnDemandHolderIdiomSt;
+import cc.ifnot.java.design_patterns.singleton.IvoryTowerSt;
+import cc.ifnot.java.design_patterns.singleton.ThreadSafeDoubleCheckLockingSt;
 import cc.ifnot.libs.utils.Lg;
 
 class MyClassTest {
@@ -56,6 +60,104 @@ class MyClassTest {
             executorService.execute(() -> {
                 Lg.d("count: %d - actual: %s = expected: %s", ii,
                         EnumSt.INSTANCE, EnumSt.INSTANCE);
+                latch.countDown();
+            });
+        }
+        latch.await();
+
+    }
+
+
+    @Test
+    @Timeout(50)
+    @DisplayName("testThreadSafeDoubleCheckLockingSt")
+    void testThreadSafeDoubleCheckLockingSt() throws InterruptedException {
+//        Assertions.assertEquals(cd.getCount(), 0);
+        Lg.d("enter lg");
+
+        CountDownLatch latch = new CountDownLatch(1000);
+
+        for (int i = 0; i < 1000; i++) {
+            int ii = i;
+            executorService.execute(() -> {
+                ThreadSafeDoubleCheckLockingSt a = ThreadSafeDoubleCheckLockingSt.getInstance();
+                ThreadSafeDoubleCheckLockingSt b = ThreadSafeDoubleCheckLockingSt.getInstance();
+                Lg.d("count: %d - actual: %s = expected: %s", ii,
+                        a, b);
+                Assertions.assertEquals(a, b);
+                latch.countDown();
+            });
+        }
+        latch.await();
+
+    }
+
+    @Test
+    @Timeout(50)
+    @DisplayName("testIvoryTowerSt")
+    void testIvoryTowerSt() throws InterruptedException {
+//        Assertions.assertEquals(cd.getCount(), 0);
+        Lg.d("enter lg");
+
+        CountDownLatch latch = new CountDownLatch(1000);
+
+        for (int i = 0; i < 1000; i++) {
+            int ii = i;
+            executorService.execute(() -> {
+                IvoryTowerSt a = IvoryTowerSt.getInstance();
+                IvoryTowerSt b = IvoryTowerSt.getInstance();
+                Lg.d("count: %d - actual: %s = expected: %s", ii,
+                        a, b);
+                Assertions.assertEquals(a, b);
+                latch.countDown();
+            });
+        }
+        latch.await();
+
+    }
+
+
+    @Test
+    @Timeout(50)
+    @DisplayName("testInitializingOnDemandHolderIdiomSt")
+    void testInitializingOnDemandHolderIdiomSt() throws InterruptedException {
+//        Assertions.assertEquals(cd.getCount(), 0);
+        Lg.d("enter lg");
+
+        CountDownLatch latch = new CountDownLatch(1000);
+
+        for (int i = 0; i < 1000; i++) {
+            int ii = i;
+            executorService.execute(() -> {
+                InitializingOnDemandHolderIdiomSt a = InitializingOnDemandHolderIdiomSt.getInstance();
+                InitializingOnDemandHolderIdiomSt b = InitializingOnDemandHolderIdiomSt.getInstance();
+                Lg.d("count: %d - actual: %s = expected: %s", ii,
+                        a, b);
+                Assertions.assertEquals(a, b);
+                latch.countDown();
+            });
+        }
+        latch.await();
+
+    }
+
+    @Test
+    @Timeout(50)
+    @DisplayName("testFailSt")
+    void testFailSt() throws InterruptedException {
+//        Assertions.assertEquals(cd.getCount(), 0);
+        Lg.d("enter lg");
+
+        CountDownLatch latch = new CountDownLatch(1000);
+
+        for (int i = 0; i < 1000; i++) {
+            int ii = i;
+            executorService.execute(() -> {
+                FailSt a = FailSt.getInstance();
+                FailSt b = FailSt.getInstance();
+                Lg.d("count: %d - actual: %s = expected: %s", ii,
+                        a, b);
+                Assertions.assertEquals(a, b);
                 latch.countDown();
             });
         }
