@@ -74,6 +74,6 @@ dependencies {
 repositories {
     mavenCentral()
     flatDir {
-        dirs '../utils/utils_lint/aar/build/outputs/aar'
+        dirs '../../utils/utils_lint/aar/build/outputs/aar'
     }
 }

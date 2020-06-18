@@ -1,4 +1,4 @@
-include ':android:javalibs'
+
 include ':android:app'
 include ':android:hello'
 include ':android:libs'
@@ -13,6 +13,6 @@ include ':java:annotation'
 include ':java:design_patterns'
 
 // third part libs for java and android
-include ':libs:RxJava'
+include ':libs'
 
 rootProject.name='hello'

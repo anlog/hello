@@ -1,0 +1,21 @@
+apply plugin: 'java-library'
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['RxJava/src/main/java']
+        }
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    api "org.reactivestreams:reactive-streams:1.0.3"
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
