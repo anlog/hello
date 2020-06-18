@@ -12,4 +12,7 @@ include ':java:threads'
 include ':java:annotation'
 include ':java:design_patterns'
 
+// third part libs for java and android
+include ':libs:RxJava'
+
 rootProject.name='hello'
