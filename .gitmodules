@@ -1,0 +1,3 @@
+[submodule "rxjava"]
+	path = libs/RxJava
+	url = https://github.com/ReactiveX/RxJava
