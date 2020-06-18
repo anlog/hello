@@ -1,6 +1,7 @@
 package cc.ifnot.java.libs;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 
 import cc.ifnot.libs.utils.Lg;
 import io.reactivex.rxjava3.annotations.NonNull;
@@ -17,7 +18,8 @@ public class MyClass {
         Lg.showMore(true);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
         Completable.fromCallable(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
@@ -33,6 +35,7 @@ public class MyClass {
             @Override
             public void onComplete() {
                 Lg.d("onComplete");
+                latch.countDown();
             }
 
             @Override
@@ -40,5 +43,6 @@ public class MyClass {
                 Lg.d("onError");
             }
         });
+        latch.await();
     }
 }
