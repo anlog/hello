@@ -1,3 +1,9 @@
+include ':app'
+setBinding(new Binding([gradle: this]))
+evaluate(new File(
+        settingsDir,
+        'ft/.android/include_flutter.groovy'
+))
 
 include ':android:app'
 include ':android:hello'
@@ -16,4 +22,7 @@ include ':java:design_patterns'
 include ':other:rxjava'
 include ':other:rxandroid'
 
-rootProject.name='hello'
+rootProject.name = 'hello'
+
+include ':ft'
+project(':ft').projectDir = new File('ft')

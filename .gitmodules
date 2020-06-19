@@ -4,3 +4,6 @@
 [submodule "rxandroid"]
 	path = other/libs/RxAndroid
 	url = https://github.com/ReactiveX/RxAndroid
+[submodule "ft"]
+	path = ft
+	url = https://github.com/anlog/ft
