@@ -1,0 +1,43 @@
+apply plugin: 'com.android.library'
+
+// we create utils:android only for lint check for utils
+// cause we use aar for support lint custom
+// so utils:android has no source
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 29
+        versionCode version_code
+        versionName version_name
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+        archivesBaseName = "rxandroid"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets {
+        main {
+
+            java.srcDirs = ['../libs/RxAndroid/rxandroid/src/main/java']
+
+            //   res.srcDirs = ['']
+
+            manifest.srcFile '../libs/RxAndroid/rxandroid/src/main/AndroidManifest.xml'
+        }
+    }
+
+    dependencies {
+        implementation project(':other:rxjava')
+    }
+
+}

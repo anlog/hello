@@ -2,7 +2,7 @@ apply plugin: 'java-library'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project(":libs")
+    implementation project(':other:rxjava')
     implementation project(":utils")
 }
 

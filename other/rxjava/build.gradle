@@ -3,10 +3,10 @@ apply plugin: 'java-library'
 sourceSets {
     main {
         java {
-            srcDirs = ['RxJava/src/main/java']
+            srcDirs = ['../libs/RxJava/src/main/java']
         }
         resources {
-            srcDirs = ['src/main/resources']
+            srcDirs = ['../libs/RxJava/src/main/resources']
         }
     }
 }

@@ -1,3 +1,6 @@
 [submodule "rxjava"]
-	path = libs/RxJava
+	path = other/libs/RxJava
 	url = https://github.com/ReactiveX/RxJava
+[submodule "rxandroid"]
+	path = other/libs/RxAndroid
+	url = https://github.com/ReactiveX/RxAndroid

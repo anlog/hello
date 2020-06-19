@@ -13,6 +13,7 @@ include ':java:annotation'
 include ':java:design_patterns'
 
 // third part libs for java and android
-include ':libs'
+include ':other:rxjava'
+include ':other:rxandroid'
 
 rootProject.name='hello'
