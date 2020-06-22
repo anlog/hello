@@ -1,6 +1,7 @@
 package cc.ifnot.java.libs;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 
 import cc.ifnot.libs.utils.Lg;
@@ -18,6 +19,8 @@ public class MyClass {
     }
 
     public static void main(String[] args) throws InterruptedException {
+
+//        CompletableFuture.runAsync()
         CountDownLatch latch = new CountDownLatch(1);
         Completable.fromCallable((Callable<Void>) () -> {
             Lg.d("call");

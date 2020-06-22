@@ -4,6 +4,9 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':other:rxjava')
     implementation project(":utils")
+
+    //noinspection GradleDynamicVersion
+    testImplementation('org.junit.jupiter:junit-jupiter:5.6.2')
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
