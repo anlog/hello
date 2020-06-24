@@ -197,7 +197,7 @@ public class Lg {
         wrap(INFO, format, msg);
     }
 
-    public static void i(String msg) {
+    public static void i(Object msg) {
         o(msg, INFO);
     }
 
@@ -205,7 +205,7 @@ public class Lg {
         wrap(VERBOSE, format, msg);
     }
 
-    public static void v(String msg) {
+    public static void v(Object msg) {
         o(msg, INFO);
     }
 
@@ -213,7 +213,7 @@ public class Lg {
         wrap(DEBUG, format, msg);
     }
 
-    public static void d(String msg) {
+    public static void d(Object msg) {
         o(msg, INFO);
     }
 
@@ -221,7 +221,7 @@ public class Lg {
         wrap(WARN, format, msg);
     }
 
-    public static void w(String msg) {
+    public static void w(Object msg) {
         o(msg, INFO);
     }
 
@@ -229,7 +229,7 @@ public class Lg {
         wrap(ERROR, format, msg);
     }
 
-    public static void e(String msg) {
+    public static void e(Object msg) {
         o(msg, INFO);
     }
 }
