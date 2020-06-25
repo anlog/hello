@@ -9,31 +9,28 @@ import java.util.List;
 import java.util.Locale;
 
 public class Lg {
-    /**
-     * Priority constant for the println method; use Log.v.
-     */
-    private static final int VERBOSE = 2;
-    /**
-     * Priority constant for the println method; use Log.d.
-     */
-    private static final int DEBUG = 3;
-    /**
-     * Priority constant for the println method; use Log.i.
-     */
-    private static final int INFO = 4;
-    /**
-     * Priority constant for the println method; use Log.w.
-     */
-    private static final int WARN = 5;
-    /**
-     * Priority constant for the println method; use Log.e.
-     */
-    private static final int ERROR = 6;
+    public static final int MORE = 0;
+
+    public static final int LESS = 1;
+
+    public static final int VERBOSE = 2;
+
+    public static final int DEBUG = 3;
+
+    public static final int INFO = 4;
+
+    public static final int WARN = 5;
+
+    public static final int ERROR = 6;
+
+    public static final int SILENT = Integer.MAX_VALUE;
+
     private static final int BASE = 29;
     private static String TAG = "Lg";
     private static boolean init = false;
     private static boolean isAndroid;
     private static boolean more = false;
+    private static int level = VERBOSE;
     private static Method v;
     private static Method vt;
     private static Method d;
@@ -67,8 +64,7 @@ public class Lg {
         }
     }
 
-
-    private static void o(Object msg, int level) {
+    private static void print(Object msg, int level) {
         if (msg instanceof Throwable) {
             if (isAndroid) {
                 try {
@@ -98,26 +94,6 @@ public class Lg {
                 f(msg, level + BASE);
             }
         } else {
-            Thread thread = Thread.currentThread();
-            StackTraceElement[] stacks = thread.getStackTrace();
-            StackTraceElement stack = stacks[1];
-            for (StackTraceElement s : stacks) {
-                if (!Thread.class.getName().equals(s.getClassName())
-                        && !"dalvik.system.VMStack".equals(s.getClassName())
-                        && !Lg.class.getName().equals(s.getClassName())) {
-                    stack = s;
-                    break;
-                }
-            }
-
-            msg = more ?
-                    String.format(Locale.getDefault(), "%s[%s:%d@%s]: %s",
-                            stack.getFileName() == null ? "Anonymous" :
-                                    stack.getFileName().replace(".java", "")
-                                            .replace(".kt", ""),
-                            stack.getMethodName(), stack.getLineNumber(), thread.getName(), msg) :
-                    String.format(Locale.getDefault(), "%s: %s", stack.getClassName(), msg);
-
             if (isAndroid) {
                 try {
                     switch (level) {
@@ -148,6 +124,43 @@ public class Lg {
         }
     }
 
+
+    private static void o(Object msg, int level) {
+        if (Lg.level <= level) {
+            if (msg instanceof Throwable) {
+                print(msg, level);
+            } else {
+                if (Lg.level > LESS) {
+                    print(msg, level);
+                } else {
+                    Thread thread = Thread.currentThread();
+                    StackTraceElement[] stacks = thread.getStackTrace();
+                    StackTraceElement stack = stacks[1];
+                    for (StackTraceElement s : stacks) {
+                        if (!Thread.class.getName().equals(s.getClassName())
+                                && !"dalvik.system.VMStack".equals(s.getClassName())
+                                && !Lg.class.getName().equals(s.getClassName())) {
+                            stack = s;
+                            break;
+                        }
+                    }
+
+                    msg = Lg.level == MORE ?
+                            String.format(Locale.getDefault(), "%s[%s:%d@%s]: %s",
+                                    stack.getFileName() == null ? "Anonymous" :
+                                            stack.getFileName().replace(".java", "")
+                                                    .replace(".kt", ""),
+                                    stack.getMethodName(), stack.getLineNumber(), thread.getName(), msg) :
+                            String.format(Locale.getDefault(), "%s: %s",
+                                    stack.getFileName() == null ? "Anonymous" :
+                                            stack.getFileName().replace(".java", "")
+                                                    .replace(".kt", ""), msg);
+                    print(msg, level);
+                }
+            }
+        }
+    }
+
     public static void f(Object msg, int level) {
         if (msg instanceof Throwable) {
             // todo: impl stack print
@@ -159,7 +172,7 @@ public class Lg {
             String console_suffix = level > 0 ?
                     "\033[0m" : "";
             System.out.println(String.format(Locale.getDefault(),
-                    "%s%s: %s%s", console_prefix, TAG, msg, console_suffix));
+                    "%s%s%s", console_prefix, msg, console_suffix));
         }
     }
 
@@ -172,24 +185,28 @@ public class Lg {
         init = true;
     }
 
-    public static void showMore(boolean more) {
-        Lg.more = more;
+    public static void level(int level) {
+        Lg.level = level;
     }
 
     private static void wrap(int level, String format, Object... msg) {
-        List<Object> logs = new ArrayList<>();
-        Collections.addAll(logs, msg);
-        List<Throwable> throwables = new ArrayList<>();
-        for (Object o : msg) {
-            if (o instanceof Throwable) {
-                throwables.add((Throwable) o);
-                logs.remove(o);
+        if (Lg.level <= LESS) {
+            List<Object> logs = new ArrayList<>();
+            Collections.addAll(logs, msg);
+            List<Throwable> throwables = new ArrayList<>();
+            for (Object o : msg) {
+                if (o instanceof Throwable) {
+                    throwables.add((Throwable) o);
+                    logs.remove(o);
+                }
             }
-        }
 
-        o(new Formatter().format(format, logs.toArray()).toString(), level);
-        for (Throwable t : throwables) {
-            o(t, level);
+            o(new Formatter().format(format, logs.toArray()).toString(), level);
+            for (Throwable t : throwables) {
+                o(t, level);
+            }
+        } else if (Lg.level <= level) {
+            o(new Formatter().format(format, msg).toString(), level);
         }
     }
 
@@ -206,7 +223,7 @@ public class Lg {
     }
 
     public static void v(Object msg) {
-        o(msg, INFO);
+        o(msg, VERBOSE);
     }
 
     public static void d(String format, Object... msg) {
@@ -214,7 +231,7 @@ public class Lg {
     }
 
     public static void d(Object msg) {
-        o(msg, INFO);
+        o(msg, DEBUG);
     }
 
     public static void w(String format, Object... msg) {
@@ -222,7 +239,7 @@ public class Lg {
     }
 
     public static void w(Object msg) {
-        o(msg, INFO);
+        o(msg, WARN);
     }
 
     public static void e(String format, Object... msg) {
@@ -230,6 +247,6 @@ public class Lg {
     }
 
     public static void e(Object msg) {
-        o(msg, INFO);
+        o(msg, ERROR);
     }
 }
