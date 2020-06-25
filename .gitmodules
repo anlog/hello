@@ -7,3 +7,6 @@
 [submodule "ft"]
 	path = ft
 	url = https://github.com/anlog/ft
+[submodule "utils"]
+	path = utils
+	url = https://github.com/anlog/lg
