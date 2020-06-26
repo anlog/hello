@@ -19,7 +19,7 @@ class CompletableFutureTest {
     @BeforeAll
     static void setUpAll() {
         Lg.tag("CompletableFutureTest");
-        Lg.showMore(true);
+        Lg.level(Lg.MORE);
         Lg.d("-----------in-------------");
     }
 

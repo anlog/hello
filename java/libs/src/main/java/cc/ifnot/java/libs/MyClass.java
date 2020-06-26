@@ -15,7 +15,7 @@ public class MyClass {
 
     static {
         Lg.tag("MyClass");
-        Lg.showMore(true);
+        Lg.level(Lg.MORE);
     }
 
     public static void main(String[] args) throws InterruptedException {

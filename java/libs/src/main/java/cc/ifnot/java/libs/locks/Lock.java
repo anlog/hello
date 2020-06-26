@@ -21,7 +21,6 @@ public class Lock {
 
     static {
         Lg.tag("Lock");
-        Lg.showMore(true);
     }
 
     public static void main(String[] args) {
