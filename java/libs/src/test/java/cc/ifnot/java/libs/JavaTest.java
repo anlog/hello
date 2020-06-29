@@ -27,6 +27,18 @@ class JavaTest {
     }
 
     @Test
+    void testString() {
+        String a = "abc";
+        String c = "abc";
+        String b = new String("abc");
+        String d = new String("abc");
+
+        Assertions.assertEquals(true, a == c);
+        Assertions.assertEquals(false, a == b);
+        Assertions.assertEquals(false, b == d);
+    }
+
+    @Test
     void testAutoBoxUnBox() {
         // AutoBox UnBox test
         Lg.d("test ");
