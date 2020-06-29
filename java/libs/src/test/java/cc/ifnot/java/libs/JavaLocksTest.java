@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import cc.ifnot.libs.utils.Lg;
@@ -28,15 +29,30 @@ class JavaLocksTest {
     }
 
     @Test
-    void testSynchronized() {
-        Lg.d("test synchronized");
+    void testAtomicInteger() {
+        Lg.d("test testAtomicInteger");
 
         // no lock with CAS (compare and swap)
         final AtomicInteger atomicInteger = new AtomicInteger(0);
+        CountDownLatch latch = new CountDownLatch(100);
         for (int i = 0; i < 100; i++) {
-            Lg.d("%d - %d", i, atomicInteger.getAndIncrement());
+            final int t = i;
+            new Thread(() -> {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                latch.countDown();
+                Lg.d("%d - %d", t, atomicInteger.getAndIncrement());
+            }).start();
         }
 
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
     }
 
