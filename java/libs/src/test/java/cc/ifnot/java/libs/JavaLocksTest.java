@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.LockSupport;
+import java.util.concurrent.locks.ReentrantLock;
 
 import cc.ifnot.libs.utils.Lg;
 
@@ -26,6 +28,93 @@ class JavaLocksTest {
     @AfterAll
     static void tailDownAll() {
         Lg.d("============ all out ============");
+    }
+
+    @Test
+    void testPackUnpack() {
+
+        ReentrantLock lock = new ReentrantLock();
+
+        final Thread t2 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                lock.lock();
+                Lg.d("get lock");
+                LockSupport.park();
+                lock.unlock();
+            }
+        });
+
+
+        final Thread t1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Lg.d("t1 enter");
+                lock.lock();
+                synchronized (this) {
+                    LockSupport.park();
+                }
+                Lg.d("t1 done");
+                lock.unlock();
+            }
+        });
+        t2.start();
+        t1.start();
+
+        Lg.d(LockSupport.getBlocker(t1));
+
+        while (true) {
+            Thread.yield();
+        }
+
+    }
+
+    @Test
+    void test() {
+        ReentrantLock lock = new ReentrantLock();
+
+        lock.newCondition();
+
+    }
+
+    @Test
+    void testWaitNotify() {
+
+        final Object lock = new Object();
+
+        final Thread t1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (lock) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    Lg.d("wait called: %s", lock);
+//                    try {
+//                        lock.wait();
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+                    Lg.d("wait done");
+                }
+            }
+        });
+        t1.start();
+        synchronized (lock) {
+            lock.notify();
+        }
+
+        while (true) {
+            Thread.yield();
+        }
+
     }
 
     @Test
