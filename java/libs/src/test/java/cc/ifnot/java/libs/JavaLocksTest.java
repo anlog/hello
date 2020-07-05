@@ -31,6 +31,43 @@ class JavaLocksTest {
     }
 
     @Test
+    void testSynchronized() {
+
+        final Thread t1 = new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(500);
+                    Lg.d("count: %d holdsLock: %s", Inner.getNothing(), Thread.holdsLock(Inner.class));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        t1.start();
+
+        final Thread t2 = new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(300);
+                    Lg.d("count: %d holdsLock: %s", Inner.getCount(), Thread.holdsLock(Inner.class));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        t2.start();
+
+        try {
+            t1.join();
+            t2.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
     void testPackUnpack() {
 
         ReentrantLock lock = new ReentrantLock();
@@ -237,5 +274,24 @@ class JavaLocksTest {
     @AfterEach
     void tailDown() {
         Lg.d("============ out ============");
+    }
+
+    static class Inner {
+        static int count = 0;
+
+        public static synchronized int getCount() {
+            Lg.d("here: %d - holdsLock: %s", count--, Thread.holdsLock(Inner.class));
+            // wait here
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return count;
+        }
+
+        public synchronized static Object getNothing() {
+            return null;
+        }
     }
 }
