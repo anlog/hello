@@ -30,9 +30,38 @@ class JavaLocksTest {
         Lg.d("============ all out ============");
     }
 
+
+    /*
+    * what is a lock? why need it?
+    * when we want control the public variable access from multi thread:
+    *   * no lock, but keep one thread can access it: CAS, atomic operator
+    *   * no matter who want it, keep only one can access it: mutex lock
+    *
+    * special lock, like rwLock, ...
+    *
+    * when we control variable, we accurately control the code block
+    *   synchronized code block + lock = THREAD SYNCING
+    *   when thread acquire lock: enter Critical section
+    *
+    * PROCESS SYNCING is kernel or OS business
+    * so process only need communication
+    *
+    * multi thread synchronize : LOCK
+    * multi process communication : IPC
+    *
+    * Java:
+    *   synchronized {}: make a synchronized code block and *lock* object or class;
+    *   ReentrantLock, ...
+    *
+    * special situation: condition, semaphore, barrier ...
+    *   Object.wait notify notifyAll
+    *   Thread.sleep yield
+    *   Thread pack unpack
+    *   thread join
+    * */
+
     @Test
     void testSynchronized() {
-
         final Thread t1 = new Thread(() -> {
             while (true) {
                 try {
