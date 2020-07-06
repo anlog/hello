@@ -14,7 +14,7 @@ open class App() : Application() {
 
     init {
         Lg.tag("App")
-        Lg.showMore(true)
+        Lg.level(Lg.DEBUG)
     }
 
     constructor(o: Any) : this() {
