@@ -39,6 +39,14 @@ class JavaTest {
     }
 
     @Test
+    void testPrimitive() {
+
+        Lg.d(int.class.getName());
+        Lg.d(boolean.class.getClasses());
+        Lg.d(String.class.getName());
+    }
+
+    @Test
     void testAutoBoxUnBox() {
         // AutoBox UnBox test
         Lg.d("test ");

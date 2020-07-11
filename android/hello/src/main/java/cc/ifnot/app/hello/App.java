@@ -24,7 +24,7 @@ public class App extends Application {
 
     static {
         Lg.tag("Hello");
-        Lg.showMore(true);
+        Lg.level(Lg.MORE);
         Lg.e("static");
         Lg.d("%s", "throwable", new Exception());
     }
