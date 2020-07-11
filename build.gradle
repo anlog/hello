@@ -35,6 +35,26 @@ buildscript {
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
+
+    //booster
+    ext.booster_version = '2.2.0'
+    ext.debug = gradle.startParameter.taskNames.any { it.contains('debug') || it.contains('Debug') }
+
+    repositories {
+        google()
+        mavenCentral()
+        jcenter()
+        maven { url 'https://oss.sonatype.org/content/repositories/public' }
+    }
+
+    dependencies {
+        classpath "com.didiglobal.booster:booster-gradle-plugin:$booster_version"
+
+        if (!debug) {
+            classpath "com.didiglobal.booster:booster-task-analyser:$booster_version"
+        }
+    }
+
 }
 
 allprojects {
