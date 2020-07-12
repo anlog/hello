@@ -86,3 +86,5 @@ add_custom_target(libgo_jni_${VERSION}.so WORKING_DIRECTORY "${CMAKE_CURRENT_SOU
         )
 
 add_dependencies(footest libgo_jni_${VERSION}.so)
+
+add_subdirectory(../aosp ../aosp/build)
