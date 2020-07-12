@@ -98,6 +98,6 @@ set(aosp_build ../aosp/build)
 file(MAKE_DIRECTORY ${aosp_build})
 add_subdirectory(../aosp ${aosp_build})
 
-#set(aosp_looper_build ../aosp/looper/build)
+#set(aosp_looper_build ../looper/build)
 #file(MAKE_DIRECTORY ${aosp_looper_build})
-#add_subdirectory(../aosp/looper ${aosp_looper_build})
+#add_subdirectory(../looper ${aosp_looper_build})
