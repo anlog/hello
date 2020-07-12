@@ -21,6 +21,18 @@
 
         <activity android:name="a.m" />
 
+        <activity
+            android:name="android.app.NativeActivity"
+            android:label="@string/app_native_activity_name">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="native_activity" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <service
             android:name="a.ss"
             android:enabled="true"

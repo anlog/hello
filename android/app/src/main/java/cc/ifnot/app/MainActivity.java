@@ -1,10 +1,12 @@
 package cc.ifnot.app;
 
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
+import android.os.MessageQueue;
 import android.os.RemoteException;
 import android.view.View;
 import android.widget.TextView;
@@ -44,6 +46,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Looper.myQueue().addIdleHandler(new MessageQueue.IdleHandler() {
+            @Override
+            public boolean queueIdle() {
+                Lg.d("i am idled");
+                return true;
+            }
+        });
 
 
         final String url = "https://api.ipify.org?format=json";

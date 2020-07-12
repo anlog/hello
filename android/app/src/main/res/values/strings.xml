@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">app</string>
+    <string name="app_name">ifnot</string>
+    <string name="app_native_activity_name">native_activity</string>
 </resources>

@@ -62,7 +62,7 @@ if (${TARGET_ABI} MATCHES ${ANDROID_ABI})
 endif ()
 # go_jni test
 
-## this is for jni indexing
+## this is for jni indexing(with no SHARED)
 add_library(go_jni go_jni/go_jni.c)
 
 string(TOLOWER ${CMAKE_HOST_SYSTEM_NAME} OS)
@@ -85,6 +85,19 @@ add_custom_target(libgo_jni_${VERSION}.so WORKING_DIRECTORY "${CMAKE_CURRENT_SOU
         BUILDDIR=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/../generated-src
         )
 
+# hack here, no dependencies if fact
 add_dependencies(footest libgo_jni_${VERSION}.so)
 
-add_subdirectory(../aosp ../aosp/build)
+## sub projects
+
+set(native_activity_build ../native_activity/build)
+file(MAKE_DIRECTORY ${native_activity_build})
+add_subdirectory(../native_activity ${native_activity_build})
+
+set(aosp_build ../aosp/build)
+file(MAKE_DIRECTORY ${aosp_build})
+add_subdirectory(../aosp ${aosp_build})
+
+#set(aosp_looper_build ../aosp/looper/build)
+#file(MAKE_DIRECTORY ${aosp_looper_build})
+#add_subdirectory(../aosp/looper ${aosp_looper_build})
