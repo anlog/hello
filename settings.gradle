@@ -1,3 +1,4 @@
+include ':ax'
 include ':app'
 setBinding(new Binding([gradle: this]))
 evaluate(new File(
