@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.TreeMap;
 
 import cc.ifnot.libs.utils.Lg;
 
@@ -68,6 +69,22 @@ class ListTest {
 
         Lg.d(map);
 
+    }
+
+    @Test
+    void testTreeMap() {
+        final TreeMap<String, String> treeMap = new TreeMap<>();
+//        Random random = new Random();
+//        for (int i = 0; i < 100; i++) {
+//            int s = random.nextInt() | i;
+//            s = s > 0 ? s : -s;
+//            treeMap.put(String.valueOf(s), String.valueOf(s & 0xff ^ s >> 16));
+//        }
+        for (int i = 0; i < 10; i++) {
+            treeMap.put(String.valueOf(i), String.valueOf(i));
+        }
+
+        Lg.d(treeMap);
     }
 
     @Test
