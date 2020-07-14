@@ -7,6 +7,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
 
 import cc.ifnot.libs.utils.Lg;
 
@@ -29,6 +34,56 @@ class ListTest {
     }
 
     @Test
+    void testMap() {
+        Lg.d("===========");
+        final HashMap<Object, Object> map = new HashMap<>();
+        map.put(null, null);
+        map.put(1, null);
+        map.put("a", null);
+        map.put(Integer.valueOf(2), "10010");
+        map.put("b", "xyz");
+
+
+        class Hash {
+
+            private final int mKey;
+
+            public Hash(int key) {
+                this.mKey = key;
+            }
+
+            @Override
+            public int hashCode() {
+                return mKey % 10;
+            }
+        }
+
+        final Random random = new Random();
+        for (int i = 0; i < 10000; i++) {
+            Hash key = new Hash(random.nextInt() % 100);
+            int value = random.nextInt() % 1000 + 1000;
+            map.put(key, value);
+        }
+
+        Lg.d(map);
+
+    }
+
+    @Test
+    void testRemove() {
+        final ArrayList<String> l = new ArrayList<>();
+        l.add("hello");
+        l.add("world");
+
+        Lg.d(l);
+        Integer index = 0;
+        l.remove(index);
+        l.remove(0);
+        Lg.d(l);
+
+    }
+
+    @Test
     void test() {
         Lg.d("in");
         final ArrayList<Integer> l = new ArrayList<>();
@@ -41,18 +96,32 @@ class ListTest {
 
         for (int i = 0; i < l.size(); i++) {
             Lg.d("size: %d-%d", l.size(), i);
-            if(l.get(i) % 2 == 0) {
+            if (l.get(i) % 2 == 0) {
                 l.remove(i--);
                 // when remove one, should i --
             }
         }
         Lg.d(l);
 
+
+        final Iterator<Integer> iterator = l.iterator();
+        while (iterator.hasNext()) {
+            final Integer next = iterator.next();
+            if (next % 2 != 0) {
+                iterator.remove();
+            }
+        }
+        Lg.d(l);
+
+        final List<String> list = Arrays.asList("a", "b");
+        // throw UnsupportedOperationException
+        list.add("c"); // java.util.Arrays.ArrayList is not overwrite add
+
         Lg.d("------------");
 
-        for (Integer j: l) {
+        for (Integer j : l) {
             // will throw java.util.ConcurrentModificationException
-            if(j % 2 != 0) {
+            if (j % 2 != 0) {
                 l.remove(j);
             }
         }
