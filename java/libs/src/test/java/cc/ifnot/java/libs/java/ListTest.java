@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -67,6 +68,22 @@ class ListTest {
 
         Lg.d(map);
 
+    }
+
+    @Test
+    void testArrayDeque() {
+        final ArrayDeque<Integer> deque = new ArrayDeque<>();
+
+        for (int i = 0; i < 100; i++) {
+            deque.add(i);
+        }
+
+        for (int i = 0; i < 20; i++) {
+            deque.pop();
+        }
+        deque.poll();
+
+        Lg.d(deque);
     }
 
     @Test
