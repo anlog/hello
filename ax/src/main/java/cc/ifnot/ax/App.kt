@@ -1,10 +1,14 @@
 package cc.ifnot.ax
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
+import android.os.Bundle
 import android.os.IBinder
+import android.view.View
+import android.view.ViewGroup
 import cc.ifnot.libs.utils.Lg
 import java.lang.reflect.InvocationHandler
 import java.lang.reflect.Method
@@ -16,6 +20,77 @@ class App : Application() {
 
     private val _binder: IBinder = binder
     private val _proxy: Any = proxy
+
+    private val lifecycleCallBack
+            by lazy {
+                object : ActivityLifecycleCallbacks {
+                    override fun onActivityPaused(activity: Activity) {
+                        Lg.d("onActivityPaused: %s", activity)
+                    }
+
+                    override fun onActivityStarted(activity: Activity) {
+                        Lg.d("onActivityStarted: %s", activity)
+                    }
+
+                    override fun onActivityDestroyed(activity: Activity) {
+                        Lg.d("onActivityDestroyed: %s", activity)
+                    }
+
+                    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+                        Lg.d("onActivitySaveInstanceState: %s", activity)
+                    }
+
+                    override fun onActivityStopped(activity: Activity) {
+                        Lg.d("onActivityStopped: %s", activity)
+                    }
+
+                    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+                        Lg.d("onActivityCreated: %s", activity)
+                    }
+
+                    override fun onActivityResumed(activity: Activity) {
+                        Lg.d("onActivityResumed: %s", activity)
+
+                        activity.window.decorView.findViewById<ViewGroup>(android.R.id.content).apply {
+                            Lg.d("resumed %s -> hook child %d onClick", activity, childCount)
+                            when (childCount) {
+                                0 -> Lg.d("no child found, improbable")
+                                else -> {
+                                    doHookClick(this)
+                                }
+                            }
+
+                        }
+                    }
+
+                }
+            }
+
+    private fun doHookClick(vg: ViewGroup) {
+        val childCount = vg.childCount
+        for (i in 0 until childCount) {
+            val view = vg.getChildAt(i)
+            Lg.d("child view: %s", view)
+            when (view) {
+                is ViewGroup -> doHookClick(view)
+                is View -> if (view.isClickable and view.hasOnClickListeners()) {
+                    val f = View::class.java.getDeclaredField("mListenerInfo")
+                    f.isAccessible = true
+                    val l = f.get(view)
+                    f.isAccessible = false
+                    val ff = l.javaClass.getDeclaredField("mOnClickListener")
+                    val ll = ff.get(l) as View.OnClickListener
+                    view.setOnClickListener { v ->
+                        Lg.d("hook OnClickListener: %s", v)
+                        ll.onClick(v)
+                    }
+                }
+                else -> Lg.d("impossible")
+            }
+
+        }
+
+    }
 
 
     companion object {
@@ -129,5 +204,16 @@ class App : Application() {
         val runningTasks = am.getRunningTasks(100)
 
         Lg.d(proxy)
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        Lg.d("onCreate")
+        registerActivityLifecycleCallbacks(lifecycleCallBack)
+    }
+
+    override fun onTerminate() {
+        super.onTerminate()
+        unregisterActivityLifecycleCallbacks(lifecycleCallBack)
     }
 }
