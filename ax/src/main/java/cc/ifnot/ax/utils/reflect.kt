@@ -5,6 +5,8 @@ package cc.ifnot.ax.utils
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
+import android.os.IBinder
+import android.os.Parcel
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.annotation.RequiresApi
@@ -63,6 +65,27 @@ fun hookAMS() {
             IActivityManagerProxy(ams!!))
     amsField.set(am, proxy)
 
+
+    val ibField = getField(ams::class.java, "mRemote")
+    ibField.isAccessible = true
+    val ib = ibField.get(ams) as IBinder
+//    val ib = getField(ams::class.java, ams, "mRemote") as IBinder
+    val ibProxy = Proxy.newProxyInstance(Thread.currentThread().contextClassLoader,
+            arrayOf(IBinder::class.java),
+            IBinerProxy(ib))
+    ibField.set(ams, ibProxy)
+
+}
+
+class IBinerProxy(private val ib: IBinder) : InvocationHandler {
+    override fun invoke(proxy: Any?, method: Method?, args: Array<out Any>?): Any? {
+        Lg.d("======proxy======")
+        Lg.d("IBinderProxy: %s -> %s %s %s %s", method?.toPretty(), args?.get(0),
+                (args?.get(1) as Parcel), args[2] as Parcel, args[3])
+        Lg.d("====== end ======")
+
+        return if (args.isNullOrEmpty()) method?.invoke(ib) else method?.invoke(ib, *args)
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -77,7 +100,7 @@ fun Method.toPretty(): String {
 class IActivityManagerProxy(@NonNull private val am: Any) : InvocationHandler {
     override fun invoke(proxy: Any?, method: Method?, args: Array<Any?>?): Any? {
         Lg.d("======proxy======")
-        Lg.d("invoked: %s - %s", method?.toPretty(), arrayOf(args))
+        Lg.d("IActivityManagerProxy: %s -> %s", method?.toPretty(), arrayOf(args))
         Lg.d("====== end ======")
 
         return when (method) {
