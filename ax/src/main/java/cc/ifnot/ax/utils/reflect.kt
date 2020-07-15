@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
+import androidx.annotation.RequiresApi
 import cc.ifnot.libs.utils.Lg
 import java.lang.reflect.Field
 import java.lang.reflect.InvocationHandler
@@ -18,6 +19,29 @@ import java.lang.reflect.Proxy
  * created on: 2020/7/15 4:27 PM
  * description:
  */
+
+@Throws
+fun bypass() {
+    val forName = Class::class.java.getDeclaredMethod("forName", String::class.java)
+    val getDeclaredMethod = Class::class.java.getDeclaredMethod("getDeclaredMethod", String::class.java, arrayOf<Class<*>>()::class.java)
+
+    val vmRuntimeClass = forName.invoke(null, "dalvik.system.VMRuntime") as Class<*>
+    val getRuntime = getDeclaredMethod.invoke(vmRuntimeClass, "getRuntime", null) as Method
+    val setHiddenApiExemptions = getDeclaredMethod.invoke(vmRuntimeClass, "setHiddenApiExemptions", arrayOf(arrayOf<String>()::class.java)) as Method
+
+    val vmRuntime = getRuntime.invoke(null)
+
+    setHiddenApiExemptions.invoke(vmRuntime, arrayOf("L"))
+}
+
+@Throws
+fun greyListCompat(clz: Class<*>): Class<*> {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        val c = Class::class.java
+        setField(c, clz, "classLoader", null)
+    }
+    return clz
+}
 
 @SuppressLint("PrivateApi")
 @Throws()
@@ -41,6 +65,7 @@ fun hookAMS() {
 
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 fun Method.toPretty(): String {
     val sb = StringBuffer()
     sb.append(returnType.typeName).append(' ')
@@ -79,7 +104,6 @@ class IActivityManagerProxy(@NonNull private val am: Any) : InvocationHandler {
 @Throws
 fun invoke(@NonNull clz: Class<*>, @Nullable target: Any?, @NonNull m: String, @Nullable args: Array<*>?): Any? {
     Lg.d("reflect: invoke %s - %s - %s", clz, target, m)
-
     val mm = if (args != null && args.isNotEmpty()) {
         val types = ArrayList<Class<*>>()
         for (i in args) {

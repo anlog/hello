@@ -5,15 +5,16 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.util.Log
 import android.util.LogPrinter
+import android.util.Printer
 import android.view.View
 import android.view.ViewGroup
-import cc.ifnot.ax.utils.getField
-import cc.ifnot.ax.utils.hookAMS
+import cc.ifnot.ax.utils.*
 import cc.ifnot.libs.utils.Lg
 import java.lang.reflect.InvocationHandler
 import java.lang.reflect.Method
@@ -124,6 +125,7 @@ class App : Application() {
         init {
             try {
                 Lg.d("hook AMS")
+                bypass()
                 hookAMS()
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -137,7 +139,25 @@ class App : Application() {
                 val clz = Class.forName("android.app.ActivityThread")
                 val at = getField(clz, null, "sCurrentActivityThread")
                 mH = getField(clz, at, "mH") as Handler
-                mH.looper.setMessageLogging(LogPrinter(Log.DEBUG, "AT"))
+                mH.looper.setMessageLogging { x -> Lg.d("mH: %s", x) }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            try {
+                val mq = Class.forName("android.os.MessageQueue")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    setField(mq, mH.looper.queue, "DEBUG", true)
+                }
+            } catch (greylist_max_o: NoSuchFieldException) {
+                try {
+                    val mq = Class.forName("android.os.MessageQueue")
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        setField(greyListCompat(mq), mH.looper.queue, "DEBUG", true)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
