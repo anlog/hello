@@ -6,9 +6,14 @@ import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.os.IBinder
+import android.util.Log
+import android.util.LogPrinter
 import android.view.View
 import android.view.ViewGroup
+import cc.ifnot.ax.utils.getField
+import cc.ifnot.ax.utils.hookAMS
 import cc.ifnot.libs.utils.Lg
 import java.lang.reflect.InvocationHandler
 import java.lang.reflect.Method
@@ -20,6 +25,7 @@ class App : Application() {
 
     private val _binder: IBinder = binder
     private val _proxy: Any = proxy
+    private val _mH = mH
 
     private val lifecycleCallBack
             by lazy {
@@ -96,6 +102,35 @@ class App : Application() {
     companion object {
         private lateinit var binder: IBinder
         private lateinit var proxy: Any
+        private lateinit var mH: Handler
+
+        init {
+            Lg.tag("ax")
+            Lg.level(Lg.MORE)
+        }
+
+        init {
+            try {
+                Lg.d("hook AMS")
+                hookAMS()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        init {
+            // ActivityThread hook
+            try {
+                @SuppressLint("PrivateApi")
+                val clz = Class.forName("android.app.ActivityThread")
+                val at = getField(clz, null, "sCurrentActivityThread")
+                mH = getField(clz, at, "mH") as Handler
+                mH.looper.setMessageLogging(LogPrinter(Log.DEBUG, "AT"))
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+        }
 
         init {
             try {
@@ -118,9 +153,9 @@ class App : Application() {
 //            val a = IBinder::class.java
 
                 class Handle(private val binder: IBinder) : InvocationHandler {
-                    override fun invoke(proxy: Any?, method: Method?, args: Array<out Any>?): Any? {
+                    override fun invoke(proxy: Any?, method: Method?, args: Array<out Any?>): Any? {
                         Lg.d("invoke: %s - %s -%s", binder, method?.name, args)
-                        return if (args != null) method?.invoke(binder, args) else method?.invoke(binder)
+                        return if (args.isNullOrEmpty()) method?.invoke(binder) else method?.invoke(binder, *args)
                     }
                 }
 
@@ -143,11 +178,6 @@ class App : Application() {
             } catch (e: ClassNotFoundException) {
             }
         }
-    }
-
-    init {
-        Lg.tag("ax")
-        Lg.level(Lg.MORE)
     }
 
     private val _prefix = "pool"

@@ -1,6 +1,5 @@
 package cc.ifnot.ax
 
-import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
@@ -20,13 +19,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var mBinding: ActivityMainBinding
 
-    companion object {
-        private val leak = Leak()
-        private var mLeak : Context? = null
-    }
-
-    class Leak {}
-
 //    private val leak
 //            by lazy {
 //                Leak()
@@ -34,7 +26,6 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        mLeak = this
         super.onCreate(savedInstanceState)
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
