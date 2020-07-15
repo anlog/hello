@@ -23,6 +23,7 @@ class FakeProvider : ContentProvider() {
     }
 
     override fun onCreate(): Boolean {
+        // exec after App.attachBaseContext
         Lg.d("FakeProvider init")
         return true
     }
