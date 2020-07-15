@@ -41,6 +41,10 @@ class MainActivity : AppCompatActivity() {
             mBinding.hello.text = "binding"
         }
 
+        mBinding.btn1.setOnClickListener {}
+        mBinding.btn2.setOnClickListener {}
+        mBinding.btn3.setOnClickListener {}
+
 
     }
 

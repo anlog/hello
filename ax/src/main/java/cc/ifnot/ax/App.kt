@@ -23,6 +23,13 @@ import java.util.concurrent.atomic.AtomicLong
 
 class App : Application() {
 
+    private val ViewHook: Int = "view_hook".foldRightIndexed(0,
+            { i, c, sum -> sum + c.toInt().shl(i) }).or(0xf.shl(24))
+
+    init {
+        println(ViewHook)
+    }
+
     private val _binder: IBinder = binder
     private val _proxy: Any = proxy
     private val _mH = mH
@@ -58,9 +65,9 @@ class App : Application() {
                         Lg.d("onActivityResumed: %s", activity)
 
                         activity.window.decorView.findViewById<ViewGroup>(android.R.id.content).apply {
-                            Lg.d("resumed %s -> hook child %d onClick", activity, childCount)
+                            Lg.d("view: resumed %s -> hook child %d onClick", activity, childCount)
                             when (childCount) {
-                                0 -> Lg.d("no child found, improbable")
+                                0 -> Lg.d("view: no child found, improbable")
                                 else -> {
                                     doHookClick(this)
                                 }
@@ -76,7 +83,7 @@ class App : Application() {
         val childCount = vg.childCount
         for (i in 0 until childCount) {
             val view = vg.getChildAt(i)
-            Lg.d("child view: %s", view)
+            Lg.d("view: child %s", view)
             when (view) {
                 is ViewGroup -> doHookClick(view)
                 is View -> if (view.isClickable and view.hasOnClickListeners()) {
@@ -86,12 +93,17 @@ class App : Application() {
                     f.isAccessible = false
                     val ff = l.javaClass.getDeclaredField("mOnClickListener")
                     val ll = ff.get(l) as View.OnClickListener
-                    view.setOnClickListener { v ->
-                        Lg.d("hook OnClickListener: %s", v)
-                        ll.onClick(v)
+                    Lg.d("view: tag: %s", view.getTag(ViewHook))
+                    if (view.getTag(ViewHook) == null) { // not hook, do hook
+                        Lg.d("view: hooked %s (tag: %s - ll: %s)", view, view.tag, ll)
+                        view.setTag(ViewHook, ll) // save original listener to tag, so we can mark them hooked
+                        view.setOnClickListener { v ->
+                            Lg.d("view: hooked OnClickListener: %s", v)
+                            ll.onClick(v)
+                        }
                     }
                 }
-                else -> Lg.d("impossible")
+                else -> Lg.d("view: impossible")
             }
 
         }
@@ -153,7 +165,7 @@ class App : Application() {
 //            val a = IBinder::class.java
 
                 class Handle(private val binder: IBinder) : InvocationHandler {
-                    override fun invoke(proxy: Any?, method: Method?, args: Array<out Any?>): Any? {
+                    override fun invoke(proxy: Any?, method: Method?, args: Array<out Any?>?): Any? {
                         Lg.d("invoke: %s - %s -%s", binder, method?.name, args)
                         return if (args.isNullOrEmpty()) method?.invoke(binder) else method?.invoke(binder, *args)
                     }

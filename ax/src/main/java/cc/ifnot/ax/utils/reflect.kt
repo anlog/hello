@@ -50,14 +50,16 @@ fun Method.toPretty(): String {
 }
 
 class IActivityManagerProxy(@NonNull private val am: Any) : InvocationHandler {
-    override fun invoke(proxy: Any?, method: Method?, args: Array<Any?>): Any {
-        Lg.d("invoked: %s - %s", method?.toPretty(), args)
+    override fun invoke(proxy: Any?, method: Method?, args: Array<Any?>?): Any? {
+        Lg.d("======proxy======")
+        Lg.d("invoked: %s - %s", method?.toPretty(), arrayOf(args))
+        Lg.d("====== end ======")
 
         return when (method) {
             null -> Lg.d("invoked method is null")
             else -> {
                 when (method.name) {
-                    "startActivity" -> if (args.isNotEmpty()) {
+                    "startActivity" -> if (!args.isNullOrEmpty()) {
                         var i = 0
                         while (args[i] !is Intent) {
                             if (++i > args.size - 1) break
