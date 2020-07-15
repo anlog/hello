@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     static {
         Lg.tag("MainActivity");
-        Lg.showMore(true);
+        Lg.level(Lg.MORE);
     }
 
     private TextView ft;

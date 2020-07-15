@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "cc.ifnot.ax"
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 29
         versionCode version_code
         versionName version_name
