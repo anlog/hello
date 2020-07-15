@@ -5,13 +5,7 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.IBinder
-import android.util.Log
-import android.util.LogPrinter
-import android.util.Printer
+import android.os.*
 import android.view.View
 import android.view.ViewGroup
 import cc.ifnot.ax.utils.*
@@ -19,7 +13,9 @@ import cc.ifnot.libs.utils.Lg
 import java.lang.reflect.InvocationHandler
 import java.lang.reflect.Method
 import java.lang.reflect.Proxy
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.atomic.AtomicLong
 
 class App : Application() {
@@ -27,8 +23,44 @@ class App : Application() {
     private val ViewHook: Int = "view_hook".foldRightIndexed(0,
             { i, c, sum -> sum + c.toInt().shl(i) }).or(0xf.shl(24))
 
+    private val _prefix = "pool"
+    private val _executors
+            by lazy {
+                Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(),
+                        ThreadFactory(_prefix))
+            }
+
+    inner class ThreadFactory(private val prefix: String) : AtomicLong(),
+            java.util.concurrent.ThreadFactory {
+
+        override fun newThread(r: Runnable?): Thread {
+            return Thread({ r?.run() },
+                    StringBuilder(prefix).append("_").append(andIncrement).toString())
+        }
+
+        override fun toByte(): Byte {
+            return get().toByte()
+        }
+
+        override fun toChar(): Char {
+            return get().toChar()
+        }
+
+        override fun toShort(): Short {
+            return get().toShort()
+        }
+
+    }
+
     init {
-        println(ViewHook)
+
+        _executors.apply {
+            execute { Debug.printLoadedClasses(Debug.SHOW_FULL_DETAIL.or(Debug.SHOW_CLASSLOADER).or(Debug.SHOW_INITIALIZED)) }
+//            execute { Debug.startMethodTracing() }
+//            execute { Debug.startNativeTracing() }
+            
+        }
+
     }
 
     private val _binder: IBinder = binder
@@ -210,35 +242,6 @@ class App : Application() {
             } catch (e: ClassNotFoundException) {
             }
         }
-    }
-
-    private val _prefix = "pool"
-    private val executors
-            by lazy {
-                Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(),
-                        ThreadFactory(_prefix))
-            }
-
-    inner class ThreadFactory(private val prefix: String) : AtomicLong(),
-            java.util.concurrent.ThreadFactory {
-
-        override fun newThread(r: Runnable?): Thread {
-            return Thread({ r?.run() },
-                    StringBuilder(prefix).append("_").append(andIncrement).toString())
-        }
-
-        override fun toByte(): Byte {
-            return get().toByte()
-        }
-
-        override fun toChar(): Char {
-            return get().toChar()
-        }
-
-        override fun toShort(): Short {
-            return get().toShort()
-        }
-
     }
 
 
