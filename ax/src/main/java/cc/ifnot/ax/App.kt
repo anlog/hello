@@ -2,23 +2,14 @@ package cc.ifnot.ax
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
-import android.os.Bundle
-import android.os.Handler
-import android.os.IBinder
-import android.os.Message
+import android.content.Intent
+import android.os.*
 import android.view.View
 import android.view.ViewGroup
-import cc.ifnot.ax.utils.bypass
-import cc.ifnot.ax.utils.getField
-import cc.ifnot.ax.utils.hookAMS
-import cc.ifnot.ax.utils.setField
+import cc.ifnot.ax.utils.*
 import cc.ifnot.libs.utils.Lg
-import java.lang.reflect.InvocationHandler
-import java.lang.reflect.Method
-import java.lang.reflect.Proxy
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicLong
 
@@ -66,8 +57,8 @@ class App : Application() {
 
     }
 
-    private val _binder: IBinder = binder
-    private val _proxy: Any = proxy
+    //    private val _binder: IBinder = binder
+//    private val _proxy: Any = proxy
     private val _mH = mH
 
     private val lifecycleCallBack
@@ -148,8 +139,6 @@ class App : Application() {
 
 
     companion object {
-        private lateinit var binder: IBinder
-        private lateinit var proxy: Any
         private lateinit var mH: Handler
 
         init {
@@ -162,6 +151,9 @@ class App : Application() {
                 Lg.d("hook AMS")
                 bypass()
                 hookAMS()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    hookATMS()
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -179,14 +171,70 @@ class App : Application() {
 //                Lg.d("---------- %s", f)
 
                 mH = getField(clz, at, "mH") as Handler
+                Lg.d("mH: codeToString=== %s", getMethod(mH::class.java, "codeToString", arrayOf(Int::class.java)))
+                Lg.d("mH: codeToString test: %s", invoke(mH::class.java, mH, "codeToString", arrayOf(159)))
+
+//                for (m in mH::class.java.declaredMethods) Lg.d("==== %s", m)
                 mH.looper.setMessageLogging { x -> Lg.d("mH: %s", x) }
 
                 setField(Handler::class.java, mH, "mCallback", false, object : Handler.Callback {
+                    private val EXECUTE_TRANSACTION = 159
+
+                    @SuppressLint("PrivateApi")
                     override fun handleMessage(msg: Message): Boolean {
-                        Lg.d("====message====> what: %s msg: %s", msg.what, msg)
+                        Lg.d("====message====> what: %s msg: %s",
+                                invoke(mH::class.java, mH, "codeToString", arrayOf(msg.what)), msg)
+
+                        when (msg.what) {
+                            EXECUTE_TRANSACTION -> {
+
+                                val ClientTransactionClz = Class.forName("android.app.servertransaction.ClientTransaction")
+                                val LaunchActivityItemClz = Class.forName("android.app.servertransaction.LaunchActivityItem")
+
+                                val mActivityCallbacksField = ClientTransactionClz.getDeclaredField("mActivityCallbacks") //ClientTransaction的成员
+
+                                mActivityCallbacksField.isAccessible = true
+                                //类型判定，好习惯
+                                //类型判定，好习惯
+                                if (!ClientTransactionClz.isInstance(msg.obj)) return true
+                                val mActivityCallbacksObj: Any? = mActivityCallbacksField.get(msg.obj) //根据源码，在这个分支里面,msg.obj就是 ClientTransaction类型,所以，直接用
+
+                                //拿到了ClientTransaction的List<ClientTransactionItem> mActivityCallbacks;
+                                //拿到了ClientTransaction的List<ClientTransactionItem> mActivityCallbacks;
+                                val list = mActivityCallbacksObj as List<*>
+
+                                if (list.size == 0) return false
+                                val LaunchActivityItemObj = list[0]!! //所以这里直接就拿到第一个就好了
+
+
+                                if (!LaunchActivityItemClz.isInstance(LaunchActivityItemObj)) return true
+                                //这里必须判定 LaunchActivityItemClz，
+                                // 因为 最初的ActivityResultItem传进去之后都被转化成了这LaunchActivityItemClz的实例
+
+                                //这里必须判定 LaunchActivityItemClz，
+                                // 因为 最初的ActivityResultItem传进去之后都被转化成了这LaunchActivityItemClz的实例
+                                val mIntentField = LaunchActivityItemClz.getDeclaredField("mIntent")
+                                mIntentField.setAccessible(true)
+
+                                val extras = (mIntentField.get(LaunchActivityItemObj) as Intent).extras
+                                if (extras != null) {
+                                    val oriIntent = extras.getParcelable(stub) as Intent?
+                                    //那么现在有了最原始的intent，应该怎么处理呢？
+                                    Lg.d("1")
+                                    mIntentField.set(LaunchActivityItemObj, oriIntent)
+                                }
+                            }
+                            else -> {
+                                return false
+                            }
+                        }
                         return false // just hook here, go on Handler.handleMessage
                     }
                 })
+//                  2020-07-16 21:39:31.166 14001-14001/?
+//                  W/System.err: java.lang.IllegalArgumentException:
+//                  field android.app.ActivityThread.mH has type android.app.ActivityThread$H, got cc.ifnot.ax.utils.ATHandler
+//                getField(clz, "mH").set(at, ATHandler(mH))
 
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -202,50 +250,50 @@ class App : Application() {
         }
 
         init {
-            try {
-                // dipper:/ # cat /system/etc/preloaded-classes  |grep ActivityManager
-                // android.app.ActivityManager
-                // preloaded classes; no way to change it's default
-                // but will work after this
-                @SuppressLint("PrivateApi")
-                val clz = Class.forName("android.os.ServiceManager")
-                val cachedField = clz.getDeclaredField("sCache")
-                cachedField.isAccessible = true
-                @Suppress("UNCHECKED_CAST")
-                val cached = (cachedField.get(null)
-                        as MutableMap<String, IBinder>)
-                val entries = cached.entries
-                for (e in entries) {
-                    Lg.d("service: %s = %s", e.key, e.value)
-                    Lg.d(e.value.javaClass.name)
-                }
-//            val a = IBinder::class.java
-
-                class Handle(private val binder: IBinder) : InvocationHandler {
-                    override fun invoke(proxy: Any?, method: Method?, args: Array<out Any?>?): Any? {
-                        Lg.d("invoke: %s - %s -%s", binder, method?.name, args)
-                        return if (args.isNullOrEmpty()) method?.invoke(binder) else method?.invoke(binder, *args)
-                    }
-                }
-
-                val m = clz.getMethod("getService", String::class.java)
-                binder = m.invoke(null, Context.ACTIVITY_SERVICE) as IBinder
-
-                proxy = Proxy.newProxyInstance(clz.classLoader, arrayOf(IBinder::class.java),
-                        Handle(binder))
-                cached[Context.ACTIVITY_SERVICE] = proxy as IBinder
-                cachedField.set(null, cached)
-                cachedField.isAccessible = false
-
-                Lg.d("binder: %s", cached[Context.ACTIVITY_SERVICE])
-                val iBinder = cached[Context.ACTIVITY_SERVICE] as IBinder
-                iBinder.pingBinder()
+//            try {
+            // dipper:/ # cat /system/etc/preloaded-classes  |grep ActivityManager
+            // android.app.ActivityManager
+            // preloaded classes; no way to change it's default
+            // but will work after this
+//                @SuppressLint("PrivateApi")
+//                val clz = Class.forName("android.os.ServiceManager")
+//                val cachedField = clz.getDeclaredField("sCache")
+//                cachedField.isAccessible = true
+//                @Suppress("UNCHECKED_CAST")
+//                val cached = (cachedField.get(null)
+//                        as MutableMap<String, IBinder>)
+//                val entries = cached.entries
+//                for (e in entries) {
+//                    Lg.d("service: %s = %s", e.key, e.value)
+//                    Lg.d(e.value.javaClass.name)
+//                }
+////            val a = IBinder::class.java
+//
+//                class Handle(private val binder: IBinder) : InvocationHandler {
+//                    override fun invoke(proxy: Any?, method: Method?, args: Array<out Any?>?): Any? {
+//                        Lg.d("invoke: %s - %s -%s", binder, method?.name, args)
+//                        return if (args.isNullOrEmpty()) method?.invoke(binder, args) else method?.invoke(binder, *args)
+//                    }
+//                }
+//
+//                val m = clz.getMethod("getService", String::class.java)
+//                binder = m.invoke(null, Context.ACTIVITY_SERVICE) as IBinder
+//
+//                proxy = Proxy.newProxyInstance(clz.classLoader, arrayOf(IBinder::class.java),
+//                        Handle(binder))
+//                cached[Context.ACTIVITY_SERVICE] = proxy as IBinder
+//                cachedField.set(null, cached)
+//                cachedField.isAccessible = false
+//
+//                Lg.d("binder: %s", cached[Context.ACTIVITY_SERVICE])
+//                val iBinder = cached[Context.ACTIVITY_SERVICE] as IBinder
+//                iBinder.pingBinder()
 //            val systemService = getSystemService(Context.ACTIVITY_SERVICE)
-                Lg.d("binder: %s -- %s", iBinder, null)
+//                Lg.d("binder: %s -- %s", iBinder, null)
 //            cached.set(Context.ACTIVITY_SERVICE, null)
 //            cached.set()
-            } catch (e: ClassNotFoundException) {
-            }
+//            } catch (e: ClassNotFoundException) {
+//            }
         }
     }
 
@@ -255,7 +303,6 @@ class App : Application() {
         Lg.d("attachBaseContext: %s", base)
         val systemService = getSystemService(Context.ACTIVITY_SERVICE)
         Lg.d(systemService)
-        Lg.d(binder)
 
         @SuppressLint("PrivateApi")
         val clz = Class.forName("android.os.ServiceManager")
@@ -270,10 +317,9 @@ class App : Application() {
             Lg.d(e.value.javaClass.name)
         }
 
-        val am = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        val runningTasks = am.getRunningTasks(100)
+//        val am = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+//        val runningTasks = am.getRunningTasks(100)
 
-        Lg.d(proxy)
     }
 
     override fun onCreate() {
