@@ -11,10 +11,7 @@ import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.annotation.RequiresApi
 import cc.ifnot.libs.utils.Lg
-import java.lang.reflect.Field
-import java.lang.reflect.InvocationHandler
-import java.lang.reflect.Method
-import java.lang.reflect.Proxy
+import java.lang.reflect.*
 
 /**
  * author: dp
@@ -40,7 +37,7 @@ fun bypass() {
 fun greyListCompat(clz: Class<*>): Class<*> {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
         val c = Class::class.java
-        setField(c, clz, "classLoader", null)
+        setField(c, clz, "classLoader", false, null)
     }
     return clz
 }
@@ -169,13 +166,24 @@ fun getField(@NonNull clz: Class<*>, @Nullable target: Any?, @NonNull f: String)
     return ret
 }
 
-fun setField(@NonNull clz: Class<*>, @Nullable target: Any?, @NonNull f: String, @Nullable t: Any?) {
-    Lg.d("reflect: %s - %s - %s - %s", clz, target, f, t)
+fun setField(@NonNull clz: Class<*>, @Nullable target: Any?, @NonNull f: String, final: Boolean, @Nullable t: Any?) {
+    Lg.d("reflect: %s - %s - %s(%s) - %s", clz, target, f, final, t)
     val ff = clz.getDeclaredField(f)
     val accessible = ff.isAccessible
     if (!accessible) {
         ff.isAccessible = true
     }
+    if (final) {
+        val modField = getField(Field::class.java, "modifiers")
+        modField.isAccessible = true
+        modField.set(ff, modField.getInt(ff).and(Modifier.FINAL.inv()))
+    }
+
     ff.set(target, t)
+    if (final) {
+        val modField = getField(Field::class.java, "modifiers")
+        modField.isAccessible = true
+        modField.set(ff, modField.getInt(ff).and(Modifier.FINAL))
+    }
     ff.isAccessible = accessible
 }

@@ -5,17 +5,21 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
-import android.os.*
+import android.os.Bundle
+import android.os.Handler
+import android.os.IBinder
+import android.os.Message
 import android.view.View
 import android.view.ViewGroup
-import cc.ifnot.ax.utils.*
+import cc.ifnot.ax.utils.bypass
+import cc.ifnot.ax.utils.getField
+import cc.ifnot.ax.utils.hookAMS
+import cc.ifnot.ax.utils.setField
 import cc.ifnot.libs.utils.Lg
 import java.lang.reflect.InvocationHandler
 import java.lang.reflect.Method
 import java.lang.reflect.Proxy
-import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.atomic.AtomicLong
 
 class App : Application() {
@@ -55,10 +59,9 @@ class App : Application() {
     init {
 
         _executors.apply {
-            execute { Debug.printLoadedClasses(Debug.SHOW_FULL_DETAIL.or(Debug.SHOW_CLASSLOADER).or(Debug.SHOW_INITIALIZED)) }
 //            execute { Debug.startMethodTracing() }
 //            execute { Debug.startNativeTracing() }
-            
+
         }
 
     }
@@ -170,26 +173,28 @@ class App : Application() {
                 @SuppressLint("PrivateApi")
                 val clz = Class.forName("android.app.ActivityThread")
                 val at = getField(clz, null, "sCurrentActivityThread")
+                // https://cs.android.com/android/platform/superproject/+/master:frameworks/base/core/java/android/app/ActivityThread.java;l=225?q=ActivityThread&ss=android%2Fplatform%2Fsuperproject
+//                setField(clz, at, " DEBUG_MESSAGES", final = true, t = true)
+//                val f = clz.getDeclaredField("DEBUG_MESSAGES")
+//                Lg.d("---------- %s", f)
+
                 mH = getField(clz, at, "mH") as Handler
                 mH.looper.setMessageLogging { x -> Lg.d("mH: %s", x) }
+
+                setField(Handler::class.java, mH, "mCallback", false, object : Handler.Callback {
+                    override fun handleMessage(msg: Message): Boolean {
+                        Lg.d("====message====> what: %s msg: %s", msg.what, msg)
+                        return false // just hook here, go on Handler.handleMessage
+                    }
+                })
+
             } catch (e: Exception) {
                 e.printStackTrace()
             }
 
             try {
                 val mq = Class.forName("android.os.MessageQueue")
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    setField(mq, mH.looper.queue, "DEBUG", true)
-                }
-            } catch (greylist_max_o: NoSuchFieldException) {
-                try {
-                    val mq = Class.forName("android.os.MessageQueue")
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        setField(greyListCompat(mq), mH.looper.queue, "DEBUG", true)
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+                setField(mq, mH.looper.queue, "DEBUG", final = true, t = true)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -275,6 +280,7 @@ class App : Application() {
         super.onCreate()
         Lg.d("onCreate")
         registerActivityLifecycleCallbacks(lifecycleCallBack)
+//        _executors.apply { execute { Debug.printLoadedClasses(Debug.SHOW_CLASSLOADER.or(Debug.SHOW_INITIALIZED)) } }
     }
 
     override fun onTerminate() {
