@@ -6,9 +6,9 @@ dependencies {
     implementation project(':other:rxjava')
     implementation project(":utils")
 
-    implementation("com.squareup.okio:okio:2.6.0")
+    implementation('com.squareup.okio:okio:2.7.0')
 
-    implementation("com.squareup.okhttp3:okhttp:4.7.2")
+    implementation('com.squareup.okhttp3:okhttp:4.8.0')
 
     //noinspection GradleDynamicVersion
     testImplementation('org.junit.jupiter:junit-jupiter:5.6.2')
