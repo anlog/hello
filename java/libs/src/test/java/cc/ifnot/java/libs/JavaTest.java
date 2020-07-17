@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 import cc.ifnot.java.libs.extents_test.A;
@@ -30,6 +31,13 @@ class JavaTest {
         Lg.d("============ all out ============");
     }
 
+    @Test
+    void testStringByte() {
+        final String a = "ab你好xyz";
+        Lg.d("testStringByte: size %s, length: %s", a.getBytes().length,
+                a.length());
+        Lg.d("长度: %s", Arrays.toString("中国人".getBytes()));
+    }
 
     @Test
     void testHashMapListSeq() {
