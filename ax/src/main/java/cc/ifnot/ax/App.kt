@@ -6,6 +6,7 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.os.*
+import android.view.Choreographer
 import android.view.View
 import android.view.ViewGroup
 import cc.ifnot.ax.utils.*
@@ -60,6 +61,21 @@ class App : Application() {
     //    private val _binder: IBinder = binder
 //    private val _proxy: Any = proxy
     private val _mH = mH
+
+    private val _frameCallBack
+            by lazy {
+                object : Choreographer.FrameCallback {
+                    private var _frameCount = 0;
+                    private var _frameTimeNanos = System.nanoTime()
+                    override fun doFrame(frameTimeNanos: Long) {
+                        val diff = frameTimeNanos - _frameTimeNanos
+//                        Lg.d("_frameCallBack: %sms fps: %s",
+//                                diff / 1000_000L, 1000_000_000L / diff)
+                        _frameTimeNanos = frameTimeNanos
+                        Choreographer.getInstance().postFrameCallback(this)
+                    }
+                }
+            }
 
     private val lifecycleCallBack
             by lazy {
@@ -300,6 +316,8 @@ class App : Application() {
 
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
+        Choreographer.getInstance().postFrameCallback(_frameCallBack)
+
         Lg.d("attachBaseContext: %s", base)
         val systemService = getSystemService(Context.ACTIVITY_SERVICE)
         Lg.d(systemService)
@@ -331,6 +349,7 @@ class App : Application() {
 
     override fun onTerminate() {
         super.onTerminate()
+        Choreographer.getInstance().removeFrameCallback(_frameCallBack)
         unregisterActivityLifecycleCallbacks(lifecycleCallBack)
     }
 }
