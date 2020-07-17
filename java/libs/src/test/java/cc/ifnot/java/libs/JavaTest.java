@@ -7,6 +7,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+
 import cc.ifnot.java.libs.extents_test.A;
 import cc.ifnot.java.libs.extents_test.B;
 import cc.ifnot.libs.utils.Lg;
@@ -28,6 +30,30 @@ class JavaTest {
         Lg.d("============ all out ============");
     }
 
+
+    @Test
+    void testHashMapListSeq() {
+        // HashMap Node, linked list insert at last
+        class I {
+            int mark;
+
+            I(int a) {
+                mark = a;
+            }
+
+            @Override
+            public int hashCode() {
+                return 0;
+            }
+        }
+
+        final HashMap<I, Object> map = new HashMap<>();
+        for (int i = 0; i < 7; i++) {
+            map.put(new I(i), null);
+        }
+        Lg.d();
+
+    }
 
     @Test
     void testStaticExtents() {
