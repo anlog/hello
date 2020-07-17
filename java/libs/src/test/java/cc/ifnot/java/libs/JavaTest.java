@@ -7,6 +7,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import cc.ifnot.java.libs.extents_test.A;
+import cc.ifnot.java.libs.extents_test.B;
 import cc.ifnot.libs.utils.Lg;
 
 /**
@@ -25,6 +27,18 @@ class JavaTest {
     static void tailDownAll() {
         Lg.d("============ all out ============");
     }
+
+
+    @Test
+    void testStaticExtents() {
+        final B b = new B();
+        Lg.d("%s - %s", B.staticMethod(), B.class);
+        Lg.d("%s - %s", b.method(), b.getClass());
+
+        Lg.d("%s - %s", A.staticMethod(), B.staticMethod());
+
+    }
+
 
     @Test
     void testString() {
