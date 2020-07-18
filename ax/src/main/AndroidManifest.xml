@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cc.ifnot.ax">
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -28,13 +29,13 @@
 
         <service
             android:name=".service.ServerService"
-            android:exported="true"
-            android:externalService="true"
-            android:isolatedProcess="true"
-            android:process="service.server" />
+            android:exported="false"
+            android:externalService="false"
+            android:isolatedProcess="false"
+            android:process="ax.server" />
         <service
             android:name=".service.ClientService"
-            android:process="service.client" />
+            android:process="ax.client" />
         <service android:name=".service.WindowService" />
 
         <provider

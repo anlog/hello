@@ -1,16 +1,19 @@
 package cc.ifnot.ax
 
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
+import android.os.IBinder
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import cc.ifnot.ax.databinding.ActivityMainBinding
 import cc.ifnot.ax.service.ClientService
-import cc.ifnot.ax.service.ServerService
 import cc.ifnot.ax.service.WindowService
 import cc.ifnot.ax.utils.stubAction
 import cc.ifnot.libs.utils.Lg
@@ -23,6 +26,30 @@ class MainActivity : AppCompatActivity() {
         Lg.tag("MainActivity")
     }
 
+    private lateinit var ax_client: IBinder
+
+    private val conn: ServiceConnection
+            by lazy {
+                object : ServiceConnection {
+                    override fun onServiceDisconnected(name: ComponentName?) {
+                        Lg.w("onServiceDisconnected: %s", name)
+                        mBinding.btTest.isEnabled = false
+                        mBinding.btTest.isClickable = false
+                        mBinding.btTest.text = "test off"
+                    }
+
+                    override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+                        Lg.w("onServiceConnected: %s - %s", name, service)
+                        if (service != null) {
+                            ax_client = service
+                            mBinding.btTest.isEnabled = true
+                            mBinding.btTest.isClickable = true
+                            mBinding.btTest.text = "test me"
+                        }
+                    }
+
+                }
+            }
     private lateinit var mBinding: ActivityMainBinding
 
 //    private val leak
@@ -68,11 +95,12 @@ class MainActivity : AppCompatActivity() {
 
         mBinding.btWindow.setOnClickListener { startService(Intent(this, WindowService::class.java)) }
 
-        mBinding.btServer.setOnClickListener {  }
+        mBinding.btServer.setOnClickListener { bindService(Intent(this, ClientService::class.java), conn, Context.BIND_AUTO_CREATE) }
 
         mBinding.btClient.setOnClickListener { startService(Intent(this, ClientService::class.java)) }
 
 
+        mBinding.btTest.setOnClickListener {  }
     }
 
     class MyFragmentLifecycleCallbacks(binding: ActivityMainBinding) : FragmentManager.FragmentLifecycleCallbacks() {

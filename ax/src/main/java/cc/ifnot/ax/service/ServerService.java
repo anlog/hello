@@ -3,11 +3,9 @@ package cc.ifnot.ax.service;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.os.RemoteException;
 
 import androidx.annotation.Nullable;
 
-import cc.ifnot.ax.IService;
 import cc.ifnot.libs.utils.Lg;
 
 /**
@@ -16,7 +14,6 @@ import cc.ifnot.libs.utils.Lg;
  * description:
  */
 public class ServerService extends Service {
-
 
     @Override
     public void onCreate() {
@@ -40,23 +37,7 @@ public class ServerService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         Lg.d("onBind: %s", intent);
-        return new IService.Stub() {
-            @Override
-            public String hello(int i) throws RemoteException {
-                Lg.w("hello: %s", i);
-                int j = 0;
-                do {
-                    j += i % 10;
-                } while ((i = i / 10) > 0);
-                return String.valueOf(j);
-            }
-
-            @Override
-            public int world() throws RemoteException {
-                Lg.w("world");
-                return 0xff;
-            }
-        };
+        return new ServerServiceImpl();
     }
 
     @Override
