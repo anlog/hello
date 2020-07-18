@@ -1,6 +1,7 @@
 package cc.ifnot.ax
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
@@ -8,6 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import cc.ifnot.ax.databinding.ActivityMainBinding
+import cc.ifnot.ax.service.ClientService
+import cc.ifnot.ax.service.ServerService
+import cc.ifnot.ax.service.WindowService
 import cc.ifnot.ax.utils.stubAction
 import cc.ifnot.libs.utils.Lg
 import kotlinx.android.synthetic.main.activity_main.*
@@ -26,8 +30,17 @@ class MainActivity : AppCompatActivity() {
 //                Leak()
 //            }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        Lg.d("onConfigurationChanged: %s", newConfig)
+        recreate()
+//        if (delegate.localNightMode != newConfig.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+//            delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+//        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Lg.d("onCreate")
         super.onCreate(savedInstanceState)
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
@@ -52,6 +65,12 @@ class MainActivity : AppCompatActivity() {
                         .apply { action = stubAction })
             }
         }
+
+        mBinding.btWindow.setOnClickListener { startService(Intent(this, WindowService::class.java)) }
+
+        mBinding.btServer.setOnClickListener {  }
+
+        mBinding.btClient.setOnClickListener { startService(Intent(this, ClientService::class.java)) }
 
 
     }

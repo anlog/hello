@@ -9,6 +9,8 @@ import android.os.*
 import android.view.Choreographer
 import android.view.View
 import android.view.ViewGroup
+import cc.ifnot.ax.service.ClientService
+import cc.ifnot.ax.service.WindowService
 import cc.ifnot.ax.utils.*
 import cc.ifnot.libs.utils.Lg
 import java.util.concurrent.Executors
@@ -316,9 +318,17 @@ class App : Application() {
 
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
-        Choreographer.getInstance().postFrameCallback(_frameCallBack)
-
+//        Choreographer.getInstance().postFrameCallback(_frameCallBack)
         Lg.d("attachBaseContext: %s", base)
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            startForegroundService(Intent(this, WindowService::class.java))
+//            startForegroundService(Intent(this, ClientService::class.java))
+//        } else {
+//            startService(Intent(this, WindowService::class.java))
+//            startService(Intent(this, ClientService::class.java))
+//        }
+
         val systemService = getSystemService(Context.ACTIVITY_SERVICE)
         Lg.d(systemService)
 

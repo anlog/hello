@@ -63,6 +63,8 @@ dependencies {
     implementation project(':utils') // for Lg
     implementation(name: "lint-${flavor}", ext: 'aar') //for lint
 
+//    implementation 'com.google.android.material:material:1.1.0'
+
     // debugImplementation because LeakCanary should only run in debug builds.
     implementation 'com.squareup.leakcanary:plumber-android:2.4'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
