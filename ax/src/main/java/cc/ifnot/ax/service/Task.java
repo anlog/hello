@@ -3,6 +3,7 @@ package cc.ifnot.ax.service;
 import android.annotation.SuppressLint;
 import android.os.MemoryFile;
 import android.os.Parcel;
+import android.os.ParcelFileDescriptor;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 import android.os.SharedMemory;
@@ -60,26 +61,30 @@ public class Task implements Runnable {
 
 //                    final MemoryFile file = new MemoryFile(req.url, size);
 //                    file.writeBytes(sb.toString().getBytes(), 0, 0, size);
-                    if (false && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O_MR1) {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O_MR1) {
                         SharedMemory sm = SharedMemory.create(req.url, connection.getContentLength());
                         final ByteBuffer byteBuffer = sm.mapReadWrite();
-                        byte[] buf = new byte[1024];
+                        byte[] buf = new byte[1024 * 1024];
                         int size = 0;
                         int read = 0;
                         final MessageDigest md5 = MessageDigest.getInstance("md5");
-                        while ((read = is.read(buf)) > 0) {
-                            Lg.w("readed: %s", read);
-                            byteBuffer.put(buf);
+                        while ((read = is.read(buf)) != -1) {
+                            Lg.w("readed: %s, size: %s, -- %s", read, size, byteBuffer.position());
+//                            byteBuffer.position(size);
+                            byteBuffer.put(buf, 0, read);
                             size += read;
                             md5.update(buf, 0, read);
                         }
                         Lg.w("done: %s - %s", size, MD5.toHexString((
-                                MD5.md5(md5.digest()))));
+                                md5.digest())));
 //                        byteBuffer.put(sb.toString().getBytes());
                         final Parcel parcel = Parcel.obtain();
-                        parcel.writeInt(req.id);
-                        parcel.writeInt(size);
                         sm.writeToParcel(parcel, 0);
+                        parcel.setDataPosition(0);
+                        final ParcelFileDescriptor parcelFileDescriptor = parcel.readFileDescriptor();
+                        Lg.d("ParcelFileDescriptor: %s", parcelFileDescriptor.getFd());
+//                        final ParcelFileDescriptor dup = parcelFileDescriptor.dup();
+//                        Lg.w("SharedMemory: %s - %s", parcelFileDescriptor.getFd(), dup.getFd());
                         Lg.w("parcel: %s", parcel);
                         if (callback != null) {
                             try {
@@ -88,7 +93,7 @@ public class Task implements Runnable {
                                     final int count = callback.getRegisteredCallbackCount();
                                     for (int i = 0; i < count; i++) {
                                         final ICallback c = callback.getBroadcastItem(i);
-                                        c.onSuccess(Res.CREATOR.createFromParcel(parcel));
+                                        c.onSuccess(new Res(req.id, size, parcelFileDescriptor.getFileDescriptor()));
                                     }
                                 }
                             } finally {
@@ -96,7 +101,7 @@ public class Task implements Runnable {
                             }
 
                         }
-//                        sm.close();
+                        sm.close();
 
                     } else {
                         MemoryFile mf = new MemoryFile(req.url, connection.getContentLength());
@@ -105,7 +110,7 @@ public class Task implements Runnable {
                         int size = 0;
                         int read = 0;
                         final MessageDigest md5 = MessageDigest.getInstance("md5");
-                        while ((read = is.read(buf)) > 0) {
+                        while ((read = is.read(buf)) != -1) {
                             Lg.w("readed: %s - %s", read, size);
                             mf.writeBytes(buf, 0, size, read);
                             size += read;

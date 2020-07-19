@@ -8,7 +8,6 @@ import android.content.ServiceConnection;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.Parcel;
-import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
 
 import androidx.annotation.NonNull;
@@ -61,12 +60,12 @@ public class ClientService extends Service {
                             @Override
                             public void run() {
                                 try (InputStream is = new FileInputStream(res.fd)) {
-                                    byte[] buf = new byte[1024*100];
+                                    byte[] buf = new byte[1024 * 1024];
                                     final MessageDigest md5 = MessageDigest.getInstance("md5");
                                     int size = 0;
                                     int read = 0;
                                     int count = 0;
-                                    while ((read = is.read(buf)) > 0) {
+                                    while ((read = is.read(buf)) != -1) {
                                         Lg.w("onSuccess: ==>%s, %s, %s", read, size, count++);
                                         md5.update(buf, 0, read);
                                         size += read;
