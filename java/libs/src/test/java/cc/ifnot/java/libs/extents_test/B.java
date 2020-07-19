@@ -22,6 +22,14 @@ public class B extends A {
         return a + 'B';
     }
 
+    public B() {
+        Lg.d("B constructor");
+    }
+
+    public B(int a) {
+        Lg.d("B constructor with one param");
+    }
+
     @Override
     public int method() {
         Lg.d("i am B");

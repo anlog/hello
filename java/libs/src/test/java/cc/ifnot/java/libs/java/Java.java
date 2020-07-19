@@ -2,6 +2,9 @@ package cc.ifnot.java.libs.java;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.concurrent.locks.ReentrantLock;
+
+import cc.ifnot.java.libs.extents_test.B;
 import cc.ifnot.libs.utils.Lg;
 
 /**
@@ -50,5 +53,25 @@ class Java {
     @Test
     void dummy() {
 
+        ReentrantLock lock = new ReentrantLock();
+        for (int i = 0; i < 5; i++) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    lock.lock();
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }finally {
+                        lock.unlock();
+
+                    }
+                }
+            }).start();
+        }
+        Lg.d();
+
+        new B(1);
     }
 }

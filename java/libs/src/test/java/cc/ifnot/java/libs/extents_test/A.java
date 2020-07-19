@@ -17,6 +17,10 @@ public class A {
 
     private int b;
 
+    public A() {
+        Lg.d("A constructor");
+    }
+
     public static int staticMethod() {
         Lg.d("i am A");
         return a + 'A';
