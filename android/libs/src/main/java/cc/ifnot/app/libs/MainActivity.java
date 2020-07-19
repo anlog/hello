@@ -1,14 +1,21 @@
 package cc.ifnot.app.libs;
 
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import javax.inject.Inject;
 
 import cc.ifnot.app.libs.di.DaggerMainComponent;
+import cc.ifnot.app.libs.glide.GlideApp;
 import cc.ifnot.libs.utils.Lg;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
@@ -35,11 +42,20 @@ public class MainActivity extends AppCompatActivity {
     ExecutorService pool;
     @Inject
     CompositeDisposable cd;
+    private RecyclerView.Adapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        final RecyclerView rv = findViewById(R.id.rv);
+
+        rv.setLayoutManager(new GridLayoutManager(this, 2));
+        adapter = new EPAdapter();
+
+        rv.setAdapter(adapter);
+
 
         DaggerMainComponent.create().inject(this);
 //        DaggerMainComponent.builder().build().inject(this);
@@ -85,6 +101,37 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         if (cd.isDisposed()) {
             cd.clear();
+        }
+    }
+
+    private static class EPAdapter extends RecyclerView.Adapter<EPAdapter.ViewHolder> {
+
+        private List<MediaInfo> data;
+
+        @androidx.annotation.NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(@androidx.annotation.NonNull ViewGroup parent, int viewType) {
+            final ImageView iv = new ImageView(parent.getContext());
+            iv.setPadding(10, 10, 10, 10);
+            return new ViewHolder(iv);
+        }
+
+        @Override
+        public void onBindViewHolder(@androidx.annotation.NonNull ViewHolder holder, int position) {
+//            GlideApp.with(holder.iv).load(data.get(0))
+        }
+
+        @Override
+        public int getItemCount() {
+            return data != null ? data.size() : 0;
+        }
+
+        class ViewHolder extends RecyclerView.ViewHolder {
+            ImageView iv;
+
+            public ViewHolder(@androidx.annotation.NonNull View itemView) {
+                super(itemView);
+            }
         }
     }
 }
