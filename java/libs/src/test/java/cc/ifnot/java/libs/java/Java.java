@@ -51,6 +51,11 @@ class Java {
     }
 
     @Test
+    void testInt() {
+        Lg.d("%s - %s", int.class, Integer.class);
+    }
+
+    @Test
     void dummy() {
 
         ReentrantLock lock = new ReentrantLock();

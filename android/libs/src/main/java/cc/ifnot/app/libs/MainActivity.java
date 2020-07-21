@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -15,7 +14,6 @@ import java.util.concurrent.ExecutorService;
 import javax.inject.Inject;
 
 import cc.ifnot.app.libs.di.DaggerMainComponent;
-import cc.ifnot.app.libs.glide.GlideApp;
 import cc.ifnot.libs.utils.Lg;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
@@ -47,14 +45,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.ax);
+        if (true) {
+            return;
+        }
 
-        final RecyclerView rv = findViewById(R.id.rv);
-
-        rv.setLayoutManager(new GridLayoutManager(this, 2));
-        adapter = new EPAdapter();
-
-        rv.setAdapter(adapter);
+//        final RecyclerView rv = findViewById(R.id.rv);
+//
+//        rv.setLayoutManager(new GridLayoutManager(this, 2));
+//        adapter = new EPAdapter();
+//
+//        rv.setAdapter(adapter);
 
 
         DaggerMainComponent.create().inject(this);

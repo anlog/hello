@@ -45,7 +45,6 @@ class ListTest {
         map.put(Integer.valueOf(2), "10010");
         map.put("b", "xyz");
 
-
         class Hash {
 
             private final int mKey;
