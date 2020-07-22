@@ -13,6 +13,45 @@ import cc.ifnot.libs.utils.Lg;
  */
 class Search {
 
+    @Test
+    void reverseLinked() {
+        Node head = null;
+        Node current = null;
+        for (int i = 0; i < 10; i++) {
+            if (current == null) {
+                head = current = new Node(i);
+            } else {
+                current.next = new Node(i);
+                current = current.next;
+            }
+        }
+
+        current = head;
+        do {
+            System.out.print(current.data + " -> ");
+        } while ((current = current.next) != null);
+        System.out.print("null");
+
+
+        Node prev = null;
+        current = head;
+
+        do {
+            Node tmp = current.next;
+            current.next = prev;
+            prev = current;
+            current = tmp;
+        } while (current != null);
+
+
+        Lg.d();
+        current = prev;
+        do {
+            System.out.print(current.data + " -> ");
+        } while ((current = current.next) != null);
+        System.out.print("null");
+
+    }
 
     @Test
     void bubbleSort() {
@@ -70,7 +109,6 @@ class Search {
         quickSort(arr, i + 1, end);
     }
 
-
     @Test
     void reverseNum() {
         int num = 123456789;
@@ -81,7 +119,6 @@ class Search {
         Lg.d();
         Lg.d("%s", 10 + 1 >> 1);
     }
-
 
     @Test
     void binarySearchTest() {
@@ -111,6 +148,15 @@ class Search {
             }
         }
         return -1;
+    }
+
+    class Node {
+        int data;
+        Node next;
+
+        public Node(int i) {
+            data = i;
+        }
     }
 
 }
