@@ -1,14 +1,24 @@
 package cc.ifnot.app.libs;
 
+import android.net.TrafficStats;
+import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Debug;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 import javax.inject.Inject;
@@ -42,10 +52,42 @@ public class MainActivity extends AppCompatActivity {
     CompositeDisposable cd;
     private RecyclerView.Adapter adapter;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ax);
+        for (Map.Entry<String, String> entry : Debug.getRuntimeStats().entrySet()) {
+            Lg.d("-- %s - %s", entry.getKey(), entry.getValue());
+        }
+        Lg.d("uid: %s pid: %s", Binder.getCallingUid(), Binder.getCallingPid());
+        Lg.d("-- ^%s v%s", TrafficStats.getUidRxBytes(Binder.getCallingUid()), TrafficStats.getUidTxBytes(Binder.getCallingUid()));
+
+        final TextView log = findViewById(R.id.log);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final Process process = Runtime.getRuntime().exec("logcat -v threadtime ");
+                    try (BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                        String line = null;
+                        while ((line = br.readLine()) != null) {
+                            final String l = line;
+                            log.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    log.append(l + '\n');
+                                }
+                            });
+                        }
+
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
         if (true) {
             return;
         }

@@ -10,54 +10,73 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <View
-            android:background="#f00"
+        <TextView
             android:layout_width="80dp"
-            android:layout_height="120dp"/>
+            android:layout_height="120dp"
+            android:background="#f00" />
 
         <View
-            android:background="#0f0"
             android:layout_width="80dp"
-            android:layout_height="80dp"/>
-        <View
-            android:background="#00f"
-            android:layout_width="80dp"
-            android:layout_height="60dp"/>
-        <View
-            android:background="#ff0"
-            android:layout_width="80dp"
-            android:layout_height="99dp"/>
-        <View
-            android:background="#0ff"
-            android:layout_width="80dp"
-            android:layout_height="80dp"/>
+            android:layout_height="80dp"
+            android:background="#0f0" />
 
         <View
-            android:background="#0f0"
             android:layout_width="80dp"
-            android:layout_height="80dp"/>
+            android:layout_height="60dp"
+            android:background="#00f" />
+
         <View
-            android:background="#00f"
             android:layout_width="80dp"
-            android:layout_height="60dp"/>
+            android:layout_height="99dp"
+            android:background="#ff0" />
+
         <View
-            android:background="#ff0"
             android:layout_width="80dp"
-            android:layout_height="99dp"/>
+            android:layout_height="80dp"
+            android:background="#0ff" />
+
         <View
-            android:background="#0ff"
             android:layout_width="80dp"
-            android:layout_height="80dp"/>
+            android:layout_height="80dp"
+            android:background="#0f0" />
+
         <View
-            android:background="#00f"
             android:layout_width="80dp"
-            android:layout_height="60dp"/>
+            android:layout_height="60dp"
+            android:background="#00f" />
+
         <View
-            android:background="#ff0"
             android:layout_width="80dp"
-            android:layout_height="99dp"/>
+            android:layout_height="99dp"
+            android:background="#ff0" />
+
+        <View
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="#0ff" />
+
+        <View
+            android:layout_width="80dp"
+            android:layout_height="60dp"
+            android:background="#00f" />
+
+        <View
+            android:layout_width="80dp"
+            android:layout_height="99dp"
+            android:background="#ff0" />
 
 
     </cc.ifnot.app.libs.WaterFall>
+
+    <ScrollView
+        android:background="#800f"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/log"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
