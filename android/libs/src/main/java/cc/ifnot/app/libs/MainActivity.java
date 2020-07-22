@@ -5,6 +5,8 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
+import android.system.ErrnoException;
+import android.system.Os;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -63,6 +65,14 @@ public class MainActivity extends AppCompatActivity {
         Lg.d("uid: %s pid: %s", Binder.getCallingUid(), Binder.getCallingPid());
         Lg.d("-- ^%s v%s", TrafficStats.getUidRxBytes(Binder.getCallingUid()), TrafficStats.getUidTxBytes(Binder.getCallingUid()));
 
+
+//            Os.execv("/system/bin/top", null);
+//            Os.mmap()
+
+
+        for (String e : Os.environ()) {
+            Lg.w("environ: %s", e);
+        }
         final TextView log = findViewById(R.id.log);
         new Thread(new Runnable() {
             @Override
