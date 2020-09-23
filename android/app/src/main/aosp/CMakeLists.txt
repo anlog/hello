@@ -11,11 +11,11 @@ target_link_libraries(ashmem_test ${log-lib})
 add_executable(memfd_test memfd_test.c)
 
 if (${TARGET_ABI} MATCHES ${ANDROID_ABI})
-    add_custom_command(TARGET ashmem_test POST_BUILD COMMENT "POST_BUILD" VERBATIM
+    add_custom_command(TARGET memfd_test POST_BUILD COMMENT "POST_BUILD" VERBATIM
             COMMAND ${ADB} shell mkdir -p /data/local/tmp/${ANDROID_ABI}
             COMMAND ${ADB} push $<TARGET_FILE:memfd_test> /data/local/tmp/${ANDROID_ABI}/
             COMMAND ${ADB} shell "chmod a+x /data/local/tmp/${ANDROID_ABI}/memfd_test"
-            COMMAND ${ADB} shell "LD_LIBRARY_PATH=/data/local/tmp/${ANDROID_ABI} /data/local/tmp/${ANDROID_ABI}/memfd_test")
+            COMMAND ${ADB} shell "LD_LIBRARY_PATH=/data/local/tmp/${ANDROID_ABI} su -c /data/local/tmp/${ANDROID_ABI}/memfd_test")
 endif ()
 
 

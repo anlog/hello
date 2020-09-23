@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="short_label">Short Label</string>
-    <string name="long_label">Long Label .... This .... is .... Very .... Long.</string>
-    <string name="disabled">Disabled</string>
-</resources>
