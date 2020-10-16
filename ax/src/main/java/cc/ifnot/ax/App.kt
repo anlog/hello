@@ -238,8 +238,10 @@ class App : Application() {
                                 if (extras != null) {
                                     val oriIntent = extras.getParcelable(stub) as Intent?
                                     //那么现在有了最原始的intent，应该怎么处理呢？
-                                    Lg.d("1")
-                                    mIntentField.set(LaunchActivityItemObj, oriIntent)
+                                    if (oriIntent != null) {
+                                        Lg.d("revert it: $oriIntent")
+                                        mIntentField.set(LaunchActivityItemObj, oriIntent)
+                                    }
                                 }
                             }
                             else -> {

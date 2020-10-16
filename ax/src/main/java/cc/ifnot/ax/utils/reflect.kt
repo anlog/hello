@@ -144,6 +144,7 @@ class IActivityTaskManagerProxy(@NonNull private val atm: Any) : InvocationHandl
                             component = ComponentName("cc.ifnot.ax", "cc.ifnot.ax.StubActivity")
                             putExtra(stub, it)
                         }
+                        Lg.d("IActivityManagerTaskProxy: hook to -> %s", args[i])
                     }
                     method.invoke(atm, *args)
                 } else method.invoke(atm, *(args ?: arrayOfNulls(0)))
