@@ -9,8 +9,6 @@ import android.os.*
 import android.view.Choreographer
 import android.view.View
 import android.view.ViewGroup
-import cc.ifnot.ax.service.ClientService
-import cc.ifnot.ax.service.WindowService
 import cc.ifnot.ax.utils.*
 import cc.ifnot.libs.utils.Lg
 import java.util.concurrent.Executors

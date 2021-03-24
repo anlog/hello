@@ -1,13 +1,13 @@
-include ':ax'
-include ':app'
+include ':android:ax'
+include ':android:app'
+include ':android:libs'
+println(findProject(":${properties.get("flutter.hostAppProjectName")}"))
+
 setBinding(new Binding([gradle: this]))
 evaluate(new File(
         settingsDir,
         'ft/.android/include_flutter.groovy'
 ))
-
-include ':android:app'
-include ':android:libs'
 
 // include utils
 include ':utils'

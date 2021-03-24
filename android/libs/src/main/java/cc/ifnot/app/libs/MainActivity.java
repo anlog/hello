@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     static {
         Lg.tag(BuildConfig.name);
-        Lg.level(Lg.MORE);
+        Lg.level(Lg.DEBUG);
     }
 
     @Inject

@@ -80,7 +80,7 @@ add_custom_target(libgo_jni_${VERSION}.so WORKING_DIRECTORY "${CMAKE_CURRENT_SOU
         VERSION=${VERSION}
         GRADLE_USER_HOME=${GRADLE_USER_HOME}
         CFLAGS=${CMAKE_C_FLAGS}\ -Wno-unused-command-line-argument
-        LDFLAGS=${CMAKE_SHARED_LINKER_FLAGS}\ -fuse-ld=gold
+        LDFLAGS=${CMAKE_SHARED_LINKER_FLAGS}\ #-fuse-ld=gold
         DESTDIR=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
         BUILDDIR=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/../generated-src
         )
