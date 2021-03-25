@@ -1,6 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
+    apply plugin: 'cc.ifnot.version'
     def cmd = 'git rev-list HEAD --count --first-parent'
     ext.version_code = cmd.execute().text.trim().toInteger()
     ext.version_suffix = 'git rev-parse --short HEAD'.execute().text.trim()
@@ -28,7 +29,7 @@ buildscript {
 
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.3'
+        classpath "com.android.tools.build:gradle:$Vers.AGP"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
 
@@ -66,6 +67,10 @@ allprojects {
             dirs '../libs'
         }
     }
+}
+
+subprojects {
+    apply plugin: 'cc.ifnot.version'
 }
 
 task clean(type: Delete) {

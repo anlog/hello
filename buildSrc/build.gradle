@@ -1,0 +1,25 @@
+apply plugin: 'java'
+apply plugin: 'java-gradle-plugin'
+apply plugin: 'maven'
+
+repositories {
+    google()
+    jcenter()
+    mavenCentral()
+
+    maven { url 'https://www.jitpack.io' }
+}
+
+dependencies {
+    implementation gradleApi()
+    implementation 'com.github.anlog:lg:master-SNAPSHOT'
+}
+
+gradlePlugin {
+    plugins {
+        version {
+            id = 'cc.ifnot.version'
+            implementationClass = 'cc.ifnot.version.VersionPlugin'
+        }
+    }
+}
