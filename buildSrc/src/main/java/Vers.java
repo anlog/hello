@@ -1,3 +1,3 @@
 public final class Vers {
-    public static final String AGP = "4.1.3";
+    public static final String AGP = "4.2.1";
 }
