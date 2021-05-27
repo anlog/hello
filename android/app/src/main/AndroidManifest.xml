@@ -39,14 +39,6 @@
             android:hardwareAccelerated="true"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize" />
-
-        <service
-            android:name="a.ss"
-            android:enabled="true"
-            android:process=":ss" />
-        <service
-            android:name="a.cs"
-            android:process=":cs" />
     </application>
 
 </manifest>

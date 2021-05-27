@@ -39,17 +39,13 @@ open class App() : Application() {
 
         val ftEngine = FlutterEngine(this)
         ftEngine.dartExecutor.executeDartEntrypoint(
-                DartExecutor.DartEntrypoint.createDefault()
+            DartExecutor.DartEntrypoint.createDefault()
         )
 
         ftEngine.navigationChannel.setInitialRoute("/")
 
         FlutterEngineCache
-                .getInstance()
-                .put(FT_ENGINE_ID, ftEngine)
-    }
-
-    fun hello(a: String, b: Int) {
-
+            .getInstance()
+            .put(FT_ENGINE_ID, ftEngine)
     }
 }

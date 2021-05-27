@@ -1,5 +1,6 @@
 package cc.ifnot.app
 
+import a.m
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
@@ -26,7 +27,7 @@ import java.util.concurrent.TimeoutException
 open class KotlinActivity : AppCompatActivity() {
 
     companion object {
-        private val TAG = "KotlinActivity"
+        private const val TAG = "KotlinActivity"
     }
 
     init {
@@ -34,44 +35,17 @@ open class KotlinActivity : AppCompatActivity() {
     }
 
 
-    interface OnXX {
-        fun xx() : Int
-    }
-    object OXX: OnXX {
-        override fun xx(): Int {
-            return 0
-        }
-    }
-
-    fun testOnXX(onxx: OnXX) {
-        //
-    }
-    fun a() = testOnXX(OXX)
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Lg.e("r - dump")
-
         findViewById<View>(android.R.id.content).setOnClickListener {
-            startActivity(Intent(this, a.m::class.java))
+            startActivity(Intent(this, m::class.java))
         }
-//        val it = Intent()
-//        it.action = Intent.ACTION_BOOT_COMPLETED
-//        val queryBroadcastReceivers = packageManager.queryBroadcastReceivers(it, PackageManager.MATCH_ALL)
-//        for (r: ResolveInfo in queryBroadcastReceivers) {
-//            r.dump(LogPrinter(Log.ERROR, TAG), " -- ")
-//        }
 
         val fileList = fileList()
         for (f in fileList) {
             Lg.d("file: $f")
         }
-
-
-        return
-
 
         val arr = arrayOf<String>("echo 'hello world!'")
 //        val process = Runtime.getRuntime().exec(arr)
@@ -94,8 +68,14 @@ open class KotlinActivity : AppCompatActivity() {
         return
 
         Log.d(TAG, "thread: " + Thread.currentThread(), Exception())
-        Single.create(SingleOnSubscribe<Int> { Log.d(TAG, "thread: " + Thread.currentThread(), Exception()) }).subscribeOn(Schedulers.single())
-                .ignoreElement().blockingAwait()
+        Single.create(SingleOnSubscribe<Int> {
+            Log.d(
+                TAG,
+                "thread: " + Thread.currentThread(),
+                Exception()
+            )
+        }).subscribeOn(Schedulers.single())
+            .ignoreElement().blockingAwait()
 
         return
         // test
@@ -157,7 +137,11 @@ open class KotlinActivity : AppCompatActivity() {
         Log.w(TAG, "done.")
     }
 
-    private fun execCommand(arr: Array<String>, onOut: (out: String) -> Unit, onErr: (err: String) -> Unit) {
+    private fun execCommand(
+        arr: Array<String>,
+        onOut: (out: String) -> Unit,
+        onErr: (err: String) -> Unit
+    ) {
         val process = Runtime.getRuntime().exec(arr)
         Log.w(TAG, "exec cmd: $arr")
 //        process.outputStream.write(arr.toString().toByteArray())
@@ -228,11 +212,11 @@ private fun List<String>.toMapInternal(): Map<String, String> {
     return map(fun(it: String): List<String> {
         return it.split("=", limit = 2)
     })
-            .filter(fun(it: List<String>): Boolean {
-                return it.size == 2
-            })
-            .map(fun(it: List<String>): Pair<String, String> {
-                return Pair<String, String>(first = it[0], second = it[1])
-            })
-            .toMap()
+        .filter(fun(it: List<String>): Boolean {
+            return it.size == 2
+        })
+        .map(fun(it: List<String>): Pair<String, String> {
+            return Pair<String, String>(first = it[0], second = it[1])
+        })
+        .toMap()
 }

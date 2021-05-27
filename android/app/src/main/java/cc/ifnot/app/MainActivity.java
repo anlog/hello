@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Lg.w("aidl_test");
-                startService(new Intent().setClass(getApplicationContext(), a.cs.class));
             }
         });
 //        getSystemService(Context.ACCOUNT_SERVICE)
