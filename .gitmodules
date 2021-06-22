@@ -4,3 +4,6 @@
 [submodule "utils"]
 	path = utils
 	url = https://github.com/anlog/lg
+[submodule "libs/code"]
+	path = libs/code
+	url = https://github.com/anlog/code

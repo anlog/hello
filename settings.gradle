@@ -17,6 +17,9 @@ apply from: 'utils/settings.gradle'
 project(':utils_lint').projectDir = new File(rootDir, 'utils/utils_lint')
 project(':utils_lint:aar').projectDir = new File(rootDir, 'utils/utils_lint/aar')
 
+include ':code'
+project(':code').projectDir = new File(rootDir, 'libs/code')
+
 rootProject.name = 'hello'
 
 include ':ft'
