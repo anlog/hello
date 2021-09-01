@@ -7,11 +7,11 @@ buildscript {
     ext.version_suffix = 'git rev-parse --short HEAD'.execute().text.trim()
     ext.version_name = (version_code / 100).toInteger() + ".${version_code}-${version_suffix}"
 
-    ext.kotlin_version = '1.4.31'
+    ext.kotlin_version = '1.5.30'
     ext.flavor = "debug"
 
     ext.versions = [
-            'androidTools': '27.0.0',
+            'androidTools': '30.0.1',
     ]
 
     ext.deps = [
@@ -25,13 +25,14 @@ buildscript {
 
     repositories {
         google()
-        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
 
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:$Vers.AGP"
+        classpath 'com.android.tools.build:gradle:7.0.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -44,7 +45,6 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        jcenter()
         maven { url 'https://oss.sonatype.org/content/repositories/public' }
     }
 
@@ -61,7 +61,6 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
 
         flatDir {
             dirs '../libs'
