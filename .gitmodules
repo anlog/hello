@@ -1,9 +1,9 @@
 [submodule "ft"]
 	path = ft
-	url = https://github.com/anlog/ft
+	url = git@github.com:anlog/ft.git
 [submodule "utils"]
 	path = utils
-	url = https://github.com/anlog/lg
+	url = git@github.com:anlog/lg.git
 [submodule "libs/code"]
 	path = libs/code
-	url = https://github.com/anlog/code
+	url = git@github.com:anlog/code.git
